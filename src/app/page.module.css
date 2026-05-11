@@ -1,142 +1,552 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+.title{
+    color: #670770;
+    font-display: stretch;
+    font: 1.2em sans-serif;
+    font-weight: 600;
 }
 
-.main {
-  display: flex;
-  flex: 1;
+.highlight{
+    color: #000000;
+}
+
+.sub_title{
+    color: #000000c0;
+    font-display: stretch;
+    font-size: 0.9rem;
+}
+
+.title_container{
+    padding: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    background-color: rgba(255, 255, 255, 0.596);
+    width: fit-content;
+    cursor: pointer;
+    z-index: 2;
+    position: fixed;
+}
+
+.imageContainer {
+  position: absolute;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.content_body {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    padding-top: 2rem;
+    z-index: 1;
+}
+
+.right_content{
+    position: relative;
+    z-index: 1;
+}
+
+.preview_image{
+    display: flex;
+    position: relative;
+    padding-left: 2vw;
+    z-index: 1;
+    height: 26rem;
+    width: 100%;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.image {
+    object-fit: cover;
+    width: auto;
+    height: 100%;
+}
+
+.gallery{
+    padding-top: 1rem;
+    position: absolute;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.room_catogary{
+    position: relative;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.322);
+    border-radius: 1rem;
+    border: 2px solid;
+    border-color: transparent;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.room_icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.left_content{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.445);
+    padding: 1rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    min-width: fit-content;
+}
+
+.room_catogaries{
+    margin-top: 1rem;
+    justify-content: center;
+    gap: 1rem;
+    min-width: fit-content;
+}
+
+.room_catogaries_container{
+    display: flex;
+    flex-direction: column;
+    padding-left: 4rem;
+    gap: 1rem;
+    
+}
+
+.room_catogary_icons{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.room_catogary:hover{
+    cursor: pointer;
+    transition: 0.6s;
+    border-color: #670770;
+}
+
+.room_catogary_price{
+    padding-top: 0.5rem;
+    display: flex;
+    align-items: end;
+}
+
+.room_catogary_price h4{
+    color: #636363;
+    font-size: 0.9rem;
+}
+
+.room_catogary_price h3{
+    color: #670770;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding-right: 0.3rem;
+}   
+
+.room_catogary_title{
+    font-size: 1.2rem;
+    font-family: "Racing Sans One", sans-serif;
+    font-weight: 1000;
+    text-align: center;
+    color: rgb(65, 8, 60);
+}
+
+.form_price{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.form_price h3{
+    color: #670770;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.form_group{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.form_group_inputs{
+    position: absolute;
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 4rem;
+    padding-left: 0.5rem;
+    width: 25rem;
+}
+
+
+.room_catogary_text{
+    color: #3a003a;
+    font-size: 1rem;
+    padding-left: 1rem;
+}
+
+.room_nights_text{
+    color: #414041;
+    font-size: 1rem;
+}
+
+.room_price_text{
+    color: #af0c0c;
+    font-size: 1.1rem;
+}
+
+.selected {
+    background-color: rgba(103, 7, 112, 0.2);
+}
+
+.book_now_btn{
+    padding: 1rem 1.5rem;
+    background-color: #670770;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.book_now_btn:hover{
+    background-color: #3c0e41;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: 0.3s;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.active {
+  border: 2px solid #670770;
+}
+
+
+.left_wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  min-height: 700px;  /* ADD THIS */
+}
+
+/* Step 1 screen */
+.left_content {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+/* slide out down */
+.slideDown {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+/* booking form panel */
+.booking_form {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  transform: translateY(-100%);
+  transition: transform 0.6s ease;
+  opacity: 0;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.445);
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+/* slide in */
+.slideUp {
+  transform: translateY(0);
+  opacity: 1;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
+.summary{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+}
+
+.summary_line{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.room_catogary_text_2{
+    color: #686868;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.room_period_text_2{
+    padding-top: 1rem;
+    color: #686868;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.room_nights_text_2{
+    color: #686868;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.room_cost_text_2{
+    color: #bb4949;
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.room_cost_text_3{
+    color: #313131;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.booking_details_title{
+    color: #5d0c66;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.back_btn{
+    padding: 1rem 1.5rem;
+    background-color: #670770;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.booking_form_2 input{
+    padding: 0.6rem;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #670770;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.342);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: black;
+}
+
+.inputError {
+  border-color: red !important;
+}
+
+.booking_form_2 input:focus{
+    outline: none;
+    border-color: #5800519f;
+}
+
+.form_group_email_input{
+    width: 100%;
+}
+
+.form_group_name_inputs{
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.back_btn:hover{
+    background-color: #3c0e41;
+}
+
+.form_group_name_inputs input{
+    width: 100%;
+}
+
+.select_input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 2px solid #670770;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.342);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: black;
+}
+
+.payment_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;             /* match booking_form — was 40% */
+  transform: translateY(-100%);
+  transition: transform 0.6s ease;
+  opacity: 0;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.445);
+} 
+
+.slideUp {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.payment_inputs{
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.gateway_input{
+    width: 100%;
+}
+
+.payment_inputs label{
+    width: 10rem;
+    color: #000000;
+    font-size: 1rem;
+}
+
+.payment_inputs_2{
+    position: relative;
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    color: #000000;
+    font-weight: 600;
+}
+
+.payment_inputs_2 label{
+    width: 10rem;   
+    font-size: 1rem;
+    font-weight: 100;
+}
+
+
+.payment_summary{
+    padding-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1rem;
+}
+
+.payment_summary p{
+    color: #616060;
+    font-size: 0.9rem;
+    font-weight: 550;
+}
+
+.payment_summary span{
+    color: #5f0052;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.payment_summary_2{
+    display: flex;
+    gap: 0.7rem;
+}
+
+.gateway_input{
+    border: 2px solid #670770;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: white;
+    margin-bottom: 1rem;
+    color: black;
+}
+
+/* Main calendar box */
+:global(.react-datepicker) {
+    margin-left: 3rem;
+    margin-top: 2.3rem;
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    font-family: inherit;
+    background-color: rgba(240, 248, 255, 0.644);
+    scale: 1.2;
+    height: fit-content;
+}
+
+/* Header */
+:global(.react-datepicker__header) {
+  background: #3c0e41;
+  border-bottom: none;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+
+/* Month title */
+:global(.react-datepicker__current-month) {
+  color: rgb(255, 255, 255);
   font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
   font-size: 14px;
 }
 
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+/* Day names */
+:global(.react-datepicker__day-name) {
+  color: rgba(49, 49, 49, 0.85);
+  font-weight: 700;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+/* Day cells */
+:global(.react-datepicker__day) {
+  border-radius: 50%;
+  transition: 0.3s;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+/* Hover effect */
+:global(.react-datepicker__day:hover) {
+  background: rgba(103, 7, 112, 0.15);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+/* Selected day */
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--range-start),
+:global(.react-datepicker__day--range-end) {
+  background: #670770 !important;
+  color: white !important;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+/* Date range */
+:global(.react-datepicker__day--in-range) {
+  background: rgba(103, 7, 112, 0.2);
+  color: #670770;
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+/* Navigation arrows */
+:global(.react-datepicker__navigation-icon::before) {
+  border-color: white;
+}
 
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+@media (max-width: 1000px) {
+    .content_body{
+        flex-direction: column-reverse;
+    }
 }
