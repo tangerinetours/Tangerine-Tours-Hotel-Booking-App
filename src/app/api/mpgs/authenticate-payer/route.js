@@ -1,1 +1,1 @@
-payerInteraction = REQUIRED
+payerInteraction = process.env.MPGS_PAYER_INTERACTION;
