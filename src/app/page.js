@@ -342,8 +342,8 @@ export default function Home() {
               <button className={styles.book_now_btn} onClick={() => {
                 if (!startDate || !endDate) return;
                 setIsBooking(true);
-              }}>
-                BOOK NOW
+              }} fdprocessedid="16zy">
+                BOOK NOW 
               </button>
             </div>
 
@@ -468,19 +468,19 @@ export default function Home() {
                   <p style={{ color: "#670770", marginBottom: "1rem" }}>⏳ Processing your payment...</p>
                 )}
                 {payStatus === PAY_STATUS.SUCCESS && (
-                  <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", borderRadius: "0.5rem", padding: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
                     <p style={{ color: "#155724", fontWeight: "bold", fontSize: "1.1rem" }}>✅ Payment Successful!</p>
                     <p style={{ color: "#155724" }}>Thank you, {bookingDetails.firstName}. Your booking is confirmed.</p>
                     <p style={{ color: "#155724" }}>Order ID: {orderId}</p>
                   </div>
                 )}
                 {payStatus === PAY_STATUS.FAILED && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
                     <p style={{ color: "#721c24", fontWeight: "bold" }}>❌ {payError}</p>
                   </div>
                 )}
                 {payStatus === PAY_STATUS.SESSION_READY && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
                     <p style={{ color: "#721c24", fontWeight: "bold" }}>⚠️ {payError}</p>
                   </div>
                 )}
