@@ -7,17 +7,8 @@ export default function PaymentResultContent() {
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      {resultIndicator ? (
-        <>
-          <h1>Payment Complete</h1>
-          <p>Your booking has been processed. Thank you!</p>
-        </>
-      ) : (
-        <>
-          <h1>Payment Result</h1>
-          <p>No result received.</p>
-        </>
-      )}
+      <h1>Payment Result</h1>
+      <p>Result Indicator: {resultIndicator}</p>
     </div>
   );
 }
