@@ -1,54 +1,14 @@
-# ─────────────────────────────────────────────
-# Stage 1: Install dependencies
-# ─────────────────────────────────────────────
-FROM node:20-alpine AS deps
-
+FROM node:18-alpine
 WORKDIR /app
-
-COPY package.json package-lock.json* ./
-
-RUN npm install
-
-# ─────────────────────────────────────────────
-# Stage 2: Build the Next.js app
-# ─────────────────────────────────────────────
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+RUN npm ci
 COPY . .
 
-# Environment variables
-ENV NEXT_TELEMETRY_DISABLED=1
+# Build-time env vars needed for NEXT_PUBLIC_ variables
+ARG NEXT_PUBLIC_MPGS_MERCHANT_ID
+ENV NEXT_PUBLIC_MPGS_MERCHANT_ID=$NEXT_PUBLIC_MPGS_MERCHANT_ID
 
 RUN npm run build
-
-# ─────────────────────────────────────────────
-# Stage 3: Production image
-# ─────────────────────────────────────────────
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# Copy build files
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-# Permissions
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-EXPOSE 3000
-
+EXPOSE 3080
+ENV PORT=3080
 CMD ["npm", "start"]

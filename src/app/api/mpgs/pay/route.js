@@ -1,1 +1,1 @@
-gatewayCode = APPROVED
+gatewayCode = "APPROVED"
