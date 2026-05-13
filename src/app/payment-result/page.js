@@ -1,18 +1,22 @@
-"use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function PaymentResult() {
+function PaymentResultContent() {
   const params = useSearchParams();
-  // MPGS appends ?resultIndicator=xxx to this URL after challenge
   const resultIndicator = params.get("resultIndicator");
-  
-  // TODO: Compare resultIndicator against your stored successIndicator
-  // (for Hosted Session, verify by calling Retrieve Order API)
-  
+
   return (
-    <div>
+    <div style={{ padding: "2rem", textAlign: "center" }}>
       <h1>Payment Result</h1>
       <p>Result Indicator: {resultIndicator}</p>
     </div>
+  );
+}
+
+export default function PaymentResultPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "2rem" }}>Loading...</div>}>
+      <PaymentResultContent />
+    </Suspense>
   );
 }
