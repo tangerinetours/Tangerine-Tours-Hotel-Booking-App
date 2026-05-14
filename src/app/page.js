@@ -9,9 +9,12 @@ import { BedDouble } from "lucide-react";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber, parsePhoneNumber } from "react-phone-number-input";
 import { getNames } from "country-list";
-import Script from "next/script";
+
 
 const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: false });
+
+
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MERCHANT_ID = process.env.NEXT_PUBLIC_MPGS_MERCHANT_ID;
@@ -57,7 +60,6 @@ export default function Home() {
   const [challengeHtml, setChallengeHtml] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [orderId, setOrderId] = useState("");
-  const [scriptLoaded, setScriptLoaded] = useState(false);
 
   // Refs to avoid stale closures in callbacks
   const sessionIdRef = useRef("");
@@ -201,20 +203,8 @@ export default function Home() {
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Run configure when script loads after session is ready
-  const onScriptLoad = useCallback(() => {
-    setScriptLoaded(true);
-    if (sessionIdRef.current) {
-      configurePaymentSession(sessionIdRef.current);
-    }
-  }, [configurePaymentSession]);
 
-  // Run configure when session arrives after script is already loaded
-  useEffect(() => {
-    if (scriptLoaded && sessionId) {
-      configurePaymentSession(sessionId);
-    }
-  }, [scriptLoaded, sessionId, configurePaymentSession]);
+
 
   // ────────────────────────────────────────────────────────────────────────────
   // STEP 4 ─ "PAY NOW" button → tell session.js to capture card fields
@@ -270,6 +260,42 @@ export default function Home() {
     payStatus === PAY_STATUS.PROCESSING ||
     payStatus === PAY_STATUS.CHALLENGE ||
     payStatus === PAY_STATUS.SUCCESS;
+
+
+    
+// ─── Payment session ────────────────────────────────────────────────────────────────
+
+
+useEffect(() => {
+  if (!isPayment || !sessionId) return;
+
+  const existing = document.getElementById("mpgs-session-js");
+  if (existing) existing.remove();
+
+  const script = document.createElement("script");
+  script.id = "mpgs-session-js";
+  script.src = SESSION_JS_URL;
+  script.async = true;
+
+  script.onload = () => {
+    console.log("[Payment] session.js loaded");
+    setTimeout(() => {
+      configurePaymentSession(sessionId);
+    }, 300);
+  };
+
+  script.onerror = () => {
+    setPayError("Failed to load payment library. Please refresh.");
+  };
+
+  document.body.appendChild(script);
+
+  return () => {
+    const s = document.getElementById("mpgs-session-js");
+    if (s) s.remove();
+  };
+}, [isPayment, sessionId]); 
+
 
   // ────────────────────────────────────────────────────────────────────────────
   // Render
@@ -426,13 +452,7 @@ export default function Home() {
             {isPayment && bookingDetails && (
               <div className={`${styles.payment_form} ${isPayment ? styles.slideUp : ""}`}>
 
-                {/* session.js script – loaded once when payment panel appears */}
-                <Script
-                  src={SESSION_JS_URL}
-                  strategy="afterInteractive"
-                  onLoad={onScriptLoad}
-                  onError={() => setPayError("Failed to load payment library. Please refresh.")}
-                />
+
 
                 <h2 className={styles.booking_details_title}>PAYMENT DETAILS</h2>
 
