@@ -269,6 +269,9 @@ export default function Home() {
 useEffect(() => {
   if (!isPayment || !sessionId) return;
 
+  console.log("[Payment] SESSION_JS_URL:", SESSION_JS_URL)
+
+
   const existing = document.getElementById("mpgs-session-js");
   if (existing) existing.remove();
 
@@ -295,6 +298,8 @@ useEffect(() => {
     if (s) s.remove();
   };
 }, [isPayment, sessionId]); 
+
+
 
 
   // ────────────────────────────────────────────────────────────────────────────

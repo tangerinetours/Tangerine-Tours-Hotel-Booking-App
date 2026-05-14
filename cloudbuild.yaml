@@ -1,0 +1,9 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_MPGS_MERCHANT_ID=TESTTANGERINELKR'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/hotel-booking-app'
+      - '.'
