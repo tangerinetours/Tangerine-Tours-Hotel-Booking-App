@@ -18,7 +18,7 @@ const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: fals
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MERCHANT_ID = process.env.NEXT_PUBLIC_MPGS_MERCHANT_ID;
-const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/${MERCHANT_ID}/session.js`;
+const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/TESTTANGERINELKR/session.js`;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ROOM_PRICES = { SINGLE: 60, DOUBLE: 60, TRIPLE: 85 };
 const GALLERY_IMAGES = [
@@ -265,12 +265,10 @@ export default function Home() {
     
 // ─── Payment session ────────────────────────────────────────────────────────────────
 
-
 useEffect(() => {
   if (!isPayment || !sessionId) return;
 
-  console.log("[Payment] SESSION_JS_URL:", SESSION_JS_URL)
-
+  console.log("[Payment] Loading session.js from:", SESSION_JS_URL);
 
   const existing = document.getElementById("mpgs-session-js");
   if (existing) existing.remove();
@@ -281,13 +279,14 @@ useEffect(() => {
   script.async = true;
 
   script.onload = () => {
-    console.log("[Payment] session.js loaded");
+    console.log("[Payment] session.js loaded successfully");
     setTimeout(() => {
       configurePaymentSession(sessionId);
     }, 300);
   };
 
-  script.onerror = () => {
+  script.onerror = (e) => {
+    console.error("[Payment] session.js failed to load:", e);
     setPayError("Failed to load payment library. Please refresh.");
   };
 
@@ -297,8 +296,7 @@ useEffect(() => {
     const s = document.getElementById("mpgs-session-js");
     if (s) s.remove();
   };
-}, [isPayment, sessionId]); 
-
+}, [isPayment, sessionId]);
 
 
 
