@@ -307,15 +307,19 @@ useEffect(() => {
     <>
       <div className={styles.container}>
         {/* Background */}
-        <div className={styles.imageContainer}>
+
+          <div className={styles.background_wrapper}>
           <Image
-            src="/background_image.jpg"
+            src="/Background_Image.jpg"
             alt="Background"
-            width={1920} height={1080}
-            className={styles.background_image}
+            fill
             priority
+            className={styles.background_image}
           />
         </div>
+
+
+
 
         <div className={styles.content_body} suppressHydrationWarning>
           <div className={styles.left_wrapper}>
@@ -485,32 +489,34 @@ useEffect(() => {
 
                 {/* ── Status messages ── */}
                 {payStatus === PAY_STATUS.LOADING_SESSION && (
-                  <p style={{ color: "#670770", marginBottom: "1rem" }}>⏳ Initialising secure payment...</p>
+                  <p style={{ color: "#670770", marginBottom: "0.9rem" }}>⏳ Initialising secure payment...</p>
                 )}
                 {payStatus === PAY_STATUS.PROCESSING && (
-                  <p style={{ color: "#670770", marginBottom: "1rem" }}>⏳ Processing your payment...</p>
+                  <p style={{ color: "#670770", marginBottom: "0.9rem" }}>⏳ Processing your payment...</p>
                 )}
+
                 {payStatus === PAY_STATUS.SUCCESS && (
-                  <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
-                    <p style={{ color: "#155724", fontWeight: "bold", fontSize: "1.1rem" }}>✅ Payment Successful!</p>
+                  <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "0.9rem" }}>
+                    <p style={{ color: "#155724", fontWeight: "bold", fontSize: "0.9rem" }}>✅ Payment Successful!</p>
                     <p style={{ color: "#155724" }}>Thank you, {bookingDetails.firstName}. Your booking is confirmed.</p>
                     <p style={{ color: "#155724" }}>Order ID: {orderId}</p>
                   </div>
                 )}
+                
                 {payStatus === PAY_STATUS.FAILED && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
-                    <p style={{ color: "#721c24", fontWeight: "bold" }}>❌ {payError}</p>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "0.9rem" }}>
+                    <p style={{ color: "#721c24", fontWeight: "bold", fontSize: "0.8rem" }}>❌ {payError}</p>
                   </div>
                 )}
                 {payStatus === PAY_STATUS.SESSION_READY && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "1rem" }}>
-                    <p style={{ color: "#721c24", fontWeight: "bold" }}>⚠️ {payError}</p>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "1rem" }}>
+                    <p style={{ color: "#721c24", fontWeight: "bold", fontSize: "0.8rem" }}>⚠️ {payError}</p>
                   </div>
                 )}
 
                 {/* ── 3DS Challenge iframe ── */}
                 {payStatus === PAY_STATUS.CHALLENGE && challengeHtml && (
-                  <div style={{ marginBottom: "1rem" }}>
+                  <div style={{ marginBottom: "0.9rem" }}>
                     <p style={{ color: "#670770", fontWeight: "bold", marginBottom: "0.5rem" }}>
                       🔒 Please complete 3D Secure verification:
                     </p>
