@@ -305,7 +305,7 @@ useEffect(() => {
   // ────────────────────────────────────────────────────────────────────────────
   return (
     <>
-      <div>
+      <div className={styles.container}>
         {/* Background */}
         <div className={styles.imageContainer}>
           <Image
@@ -531,6 +531,8 @@ useEffect(() => {
                 {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
                   <>
                     {/* Card Number */}
+                    <div className={styles.card_details}>
+
                     <div className={styles.payment_inputs}>
                       <label htmlFor="card-number">Card Number</label>
                       {/*
@@ -550,6 +552,7 @@ useEffect(() => {
 
                     {/* Expiry + CVV on same row */}
                     <div className={styles.payment_inputs_2}>
+                      <div style={styles.payment_inputs_3}>
                       <label htmlFor="expiry-month">Expiry Month</label>
                       <input
                         className={styles.gateway_input}
@@ -560,7 +563,9 @@ useEffect(() => {
                         title="Expiry Month (MM)"
                         aria-label="Two digit expiry month"
                         style={{ width: "80px" }}
-                      />
+                      /></div>
+
+                      <div style={styles.payment_inputs_3}>
                       <label htmlFor="expiry-year">Year</label>
                       <input
                         className={styles.gateway_input}
@@ -571,7 +576,9 @@ useEffect(() => {
                         title="Expiry Year (YY)"
                         aria-label="Two digit expiry year"
                         style={{ width: "80px" }}
-                      />
+                      /></div>
+
+                      <div style={styles.payment_inputs_3}>
                       <label htmlFor="security-code">CVV</label>
                       <input
                         className={styles.gateway_input}
@@ -582,7 +589,7 @@ useEffect(() => {
                         title="Security Code"
                         aria-label="Three digit CVV security code"
                         style={{ width: "80px" }}
-                      />
+                      /></div>
                     </div>
 
                     {/* Cardholder Name */}
@@ -597,6 +604,7 @@ useEffect(() => {
                         title="Cardholder Name"
                         aria-label="Enter name on card"
                       />
+                    </div>
                     </div>
                   </>
                 )}
@@ -626,7 +634,6 @@ useEffect(() => {
                         setPayError("");
                         setSessionId("");
                         setOrderId("");
-                        setScriptLoaded(false);
                         setChallengeHtml("");
                       }}
                     >

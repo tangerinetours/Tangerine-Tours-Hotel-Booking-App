@@ -28,8 +28,12 @@
 
 .imageContainer {
   position: absolute;
-  height: 100%;
   overflow: hidden;
+}
+
+.imageContainer img {
+    overflow: hidden;
+    object-fit: cover;
 }
 
 
@@ -49,7 +53,7 @@
 .preview_image{
     display: flex;
     position: relative;
-    padding-left: 2vw;
+    padding-left: 4vw;
     z-index: 1;
     height: 26rem;
     width: 100%;
@@ -95,12 +99,14 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.445);
+    background-color: rgba(255, 255, 255, 0.514);
     padding: 1rem;
     padding-bottom: 0.5rem;
     padding-left: 2rem;
     padding-right: 2rem;
-    min-width: fit-content;
+    min-width: fit-content; 
+    border-radius: 1rem;
+    margin-left: 1rem;
 }
 
 .room_catogaries{
@@ -139,18 +145,18 @@
 
 .room_catogary_price h4{
     color: #636363;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .room_catogary_price h3{
     color: #670770;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding-right: 0.3rem;
 }   
 
 .room_catogary_title{
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-family: "Racing Sans One", sans-serif;
     font-weight: 1000;
     text-align: center;
@@ -181,7 +187,7 @@
     position: absolute;
     display: flex;
     gap: 0.5rem;
-    padding-top: 4rem;
+    padding-top: 2.5rem;
     padding-left: 0.5rem;
     width: 25rem;
 }
@@ -208,11 +214,11 @@
 }
 
 .book_now_btn{
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     background-color: #670770;
     color: white;
     border: none;
-    border-radius: 1rem;
+    border-radius: 0.7rem;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
@@ -266,18 +272,22 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 95%;
   transform: translateY(-100%);
   transition: transform 0.6s ease;
   opacity: 0;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.445);
+      border-radius: 1rem;
+    margin-left: 1rem;
+
 }
 
 /* slide in */
 .slideUp {
   transform: translateY(0);
   opacity: 1;
+
 }
 
 .summary{
@@ -297,20 +307,20 @@
 
 .room_catogary_text_2{
     color: #686868;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
 .room_period_text_2{
     padding-top: 1rem;
     color: #686868;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
 .room_nights_text_2{
     color: #686868;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
@@ -328,16 +338,16 @@
 
 .booking_details_title{
     color: #5d0c66;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
 .back_btn{
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1rem;
     background-color: #670770;
     color: white;
     border: none;
-    border-radius: 1rem;
+    border-radius: 0.6rem;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
@@ -347,13 +357,13 @@
 }
 
 .booking_form_2 input{
-    padding: 0.6rem;
+    padding: 0.5rem;
     border-style: solid;
     border-width: 2px;
     border-color: #670770;
     border-radius: 0.5rem;
     background-color: rgba(255, 255, 255, 0.342);
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin-bottom: 0.5rem;
     color: black;
 }
@@ -385,6 +395,12 @@
     width: 100%;
 }
 
+
+.form_group_name_inputs select{
+    font-size: 0.8rem;
+}
+
+
 .select_input {
     width: 100%;
     padding: 0.6rem;
@@ -400,12 +416,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;             /* match booking_form — was 40% */
+  width: 95%;             /* match booking_form — was 40% */
   transform: translateY(-100%);
   transition: transform 0.6s ease;
   opacity: 0;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.445);
+      border-radius: 1rem;
+    margin-left: 1rem;
 } 
 
 .slideUp {
@@ -417,33 +435,65 @@
     position: relative;
     display: flex;
     width: 100%;
+    flex-direction: column;
+    margin-bottom: 0.6rem;
 }
 
-.gateway_input{
+.payment_inputs input{
+    height: fit-content;
     width: 100%;
+    text-align: center;
 }
 
 .payment_inputs label{
-    width: 10rem;
-    color: #000000;
-    font-size: 1rem;
+    min-width: max-content;
+    color: #444444;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .payment_inputs_2{
     position: relative;
     display: flex;
-    width: 100%;
-    gap: 1rem;
-    color: #000000;
+    color: #444444;
     font-weight: 600;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
 }
 
 .payment_inputs_2 label{
-    width: 10rem;   
-    font-size: 1rem;
-    font-weight: 100;
+    width: 100%;   
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: max-content;
+    padding-right: 0.5rem;
 }
 
+.payment_inputs_2 input{
+    width: 100%;
+    text-align: center;
+    margin-right: 1rem;
+}
+
+.gateway_input{
+    border: 2px solid #670770;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.705);
+    color: black;
+}
+
+.card_details{
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.342);
+    padding: 1rem;
+    border-radius: 0.8rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
 
 .payment_summary{
     padding-bottom: 1.5rem;
@@ -454,14 +504,13 @@
 }
 
 .payment_summary p{
-    color: #616060;
-    font-size: 0.9rem;
-    font-weight: 550;
+    color: #000000;
+    font-size: 0.8rem;
 }
 
 .payment_summary span{
     color: #5f0052;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
@@ -470,26 +519,19 @@
     gap: 0.7rem;
 }
 
-.gateway_input{
-    border: 2px solid #670770;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    background: white;
-    margin-bottom: 1rem;
-    color: black;
-}
+
 
 /* Main calendar box */
 :global(.react-datepicker) {
-    margin-left: 3rem;
-    margin-top: 2.3rem;
+    margin-left: 2rem;
+    margin-top: 1rem;
     border: none;
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
     font-family: inherit;
     background-color: rgba(240, 248, 255, 0.644);
-    scale: 1.2;
+    scale: 1.1;
     height: fit-content;
 }
 
