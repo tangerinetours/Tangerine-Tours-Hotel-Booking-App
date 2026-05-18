@@ -560,7 +560,7 @@ useEffect(() => {
                     {/* Expiry + CVV on same row */}
                     <div className={styles.payment_inputs_2}>
                       <div style={styles.payment_inputs_3}>
-                      <label htmlFor="expiry-month">Expiry Month</label>
+                      <label htmlFor="expiry-month">Exp Month</label>
                       <input
                         className={styles.gateway_input}
                         id="expiry-month"
@@ -573,7 +573,7 @@ useEffect(() => {
                       /></div>
 
                       <div style={styles.payment_inputs_3}>
-                      <label htmlFor="expiry-year">Year</label>
+                      <label htmlFor="expiry-year">Exp Year</label>
                       <input
                         className={styles.gateway_input}
                         id="expiry-year"

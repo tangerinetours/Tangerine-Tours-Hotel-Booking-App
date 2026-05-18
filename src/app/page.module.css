@@ -725,10 +725,18 @@
   margin-left:0;
 } 
 
-.card_details{
 
-    padding: 1rem;
+
+.card_details{
+padding: 1rem;
 
 }
 
+.payment_inputs label{
+    font-size: 0.75rem;
+}
+
+.payment_inputs_2 label{
+    font-size: 0.75rem;
+}
 }
