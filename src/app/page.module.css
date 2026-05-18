@@ -24,13 +24,15 @@
     width: fit-content;
     cursor: pointer;
     z-index: 2;
-    position: fixed;
+    position: absolute;
+    border-top-left-radius: 1rem;
 }
 
 .container{
     position: relative;
     width: 100%;
     overflow: hidden;
+    
 }
 
 /* Background wrapper */
@@ -72,7 +74,7 @@
 }
 
 .right_content{
-    right: 2rem;
+    right: 2vw;
     position: fixed;
     z-index: 1;
 }
@@ -83,25 +85,28 @@
     padding-left: 4vw;
     z-index: 1;
     height: 26rem;
-    width: 100%;
+    width: 55vw;
     overflow: hidden;
     justify-content: center;
+    padding: 1rem;
 }
 
 .image {
     object-fit: cover;
-    width: auto;
+    width: 50vw;
     height: 100%;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.329);
 }
 
 .gallery{
     padding-top: 1rem;
-    position: absolute;
+    position: relative;
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .room_catogary{
@@ -127,11 +132,11 @@
     display: flex;
     flex-direction: column;
     background-color: rgba(255, 255, 255, 0.514);
-    padding: 1rem;
+    padding: 1vw;
     padding-bottom: 0.5rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    min-width: fit-content; 
+    padding-left: 2vw;
+    padding-right: 2vw;
+    width: 40vw;
     border-radius: 1rem;
     margin-left: 1rem;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
@@ -147,7 +152,7 @@
 .room_catogaries_container{
     display: flex;
     flex-direction: column;
-    padding-left: 4rem;
+    padding-left: 4vw;
     gap: 1rem;
     
 }
@@ -265,6 +270,7 @@
   cursor: pointer;
   border-radius: 0.5rem;
   transition: 0.3s;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.349);
 }
 
 .thumbnail:hover {
@@ -279,7 +285,7 @@
 
 .left_wrapper {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   height: 100%;
   min-height: 700px;  /* ADD THIS */
 }
@@ -309,6 +315,8 @@
       border-radius: 1rem;
     margin-left: 1rem;
     box-shadow: 0 30px 20px rgba(0, 0, 0, 0.12);
+    width: 35vw;
+    margin-top: 1rem;
 }
 
 /* slide in */
@@ -444,7 +452,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 95%;             /* match booking_form — was 40% */
+  width: 38VW;             /* match booking_form — was 40% */
   transform: translateY(-100%);
   transition: transform 0.6s ease;
   opacity: 0;
@@ -550,11 +558,15 @@
     gap: 0.7rem;
 }
 
+.preview_image_container{
+    width: fit-content;
+}
+
 
 
 /* Main calendar box */
 :global(.react-datepicker) {
-    margin-left: 2rem;
+    margin-left: 2vw;
     margin-top: 1rem;
     border: none;
     border-radius: 1rem;
@@ -562,7 +574,7 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
     font-family: inherit;
     background-color: rgba(240, 248, 255, 0.644);
-    scale: 1.1;
+    scale:1.1;
     height: fit-content;
 }
 
@@ -618,8 +630,81 @@
   border-color: white;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .content_body{
         flex-direction: column-reverse;
+        align-items: center;
+        padding-top: 1vw;
     }
+
+    .right_content{
+        position: relative;
+        right: 0;
+        margin-top: 0;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+
+    .preview_image{
+        height: 20rem;
+        width: 100%;
+        padding: 0;
+        padding-left: 1vw;      
+        padding-right: 1vw;
+    }
+
+    .image{
+        width: 100%;
+        height: 100%;
+    }
+
+    .left_content{
+    position: relative;
+    padding: 1vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    width: 100%;
+    margin-left: 0;
+    }
+
+    .form_group{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.room_catogaries_container{
+    padding-top: 5rem;
+    display: flex;
+    flex-direction: row;
+    padding-left: 0;
+    gap: 0.5rem;
+    
+}
+
+
+:global(.react-datepicker) {
+    scale:1.1;
+}
+
+.form_group_inputs{
+    padding-left: 0;
+}
+
+.room_catogary_price {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.room_catogary_icons{
+    gap: 0.2rem;
+}
+
+
 }

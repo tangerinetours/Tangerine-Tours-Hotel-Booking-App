@@ -335,6 +335,7 @@ useEffect(() => {
                       onChange={(update) => setDateRange(update)}
                       monthsShown={1} minDate={new Date()}
                     />
+                    
                     <div className={styles.form_group_inputs}>
                       <h3 className={styles.room_catogary_text}>{selectedRoom} ROOM</h3>
                       <h3 className={styles.room_nights_text}>
@@ -358,7 +359,7 @@ useEffect(() => {
                         <div className={icons > 1 ? styles.room_catogary_icons : styles.room_icon}>
                           {Array.from({ length: icons }).map((_, i) => (
                             <div key={i} className={styles.room_icon}>
-                              <BedDouble size={icons === 3 ? 20 : icons === 2 ? 22 : 24} color="#670770c0" />
+                              <BedDouble size={icons === 3 ? 16 : icons === 2 ? 20 : 24} color="#670770c0" />
                             </div>
                           ))}
                         </div>
