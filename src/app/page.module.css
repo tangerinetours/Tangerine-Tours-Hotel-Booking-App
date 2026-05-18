@@ -706,5 +706,14 @@
     gap: 0.2rem;
 }
 
+.booking_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem;
+  margin-left: 0;
+  margin-top: 1rem;
+}
 
 }
