@@ -716,4 +716,19 @@
   margin-top: 1rem;
 }
 
+.payment_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;             /* match booking_form — was 40% */
+  padding: 1rem;
+  margin-left:0;
+} 
+
+.card_details{
+
+    padding: 1rem;
+
+}
+
 }
