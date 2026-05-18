@@ -569,7 +569,7 @@ useEffect(() => {
                         disabled={isInputDisabled}
                         title="Expiry Month (MM)"
                         aria-label="Two digit expiry month"
-                        style={{ width: "80px" }}
+                        style={{ width: "60px" }}
                       /></div>
 
                       <div style={styles.payment_inputs_3}>
@@ -582,7 +582,7 @@ useEffect(() => {
                         disabled={isInputDisabled}
                         title="Expiry Year (YY)"
                         aria-label="Two digit expiry year"
-                        style={{ width: "80px" }}
+                        style={{ width: "60px" }}
                       /></div>
 
                       <div style={styles.payment_inputs_3}>
