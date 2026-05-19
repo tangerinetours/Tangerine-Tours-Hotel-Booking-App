@@ -310,7 +310,7 @@ useEffect(() => {
 
           <div className={styles.background_wrapper}>
           <Image
-            src="/Background_Image.jpg"
+            src="/background_image.jpg"
             alt="Background"
             fill
             priority
