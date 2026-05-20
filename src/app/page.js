@@ -14,8 +14,6 @@ import { getNames } from "country-list";
 const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: false });
 
 
-
-
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MERCHANT_ID = process.env.NEXT_PUBLIC_MPGS_MERCHANT_ID;
 const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/TESTTANGERINELKR/session.js`;
@@ -38,6 +36,7 @@ const PAY_STATUS = {
 };
 
 export default function Home() {
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   // ── UI state ────────────────────────────────────────────────────────────────
   const [isBooking, setIsBooking] = useState(false);
   const [isPayment, setIsPayment] = useState(false);
@@ -376,7 +375,7 @@ useEffect(() => {
               <button className={styles.book_now_btn} onClick={() => {
                 if (!startDate || !endDate) return;
                 setIsBooking(true);
-              }} fdprocessedid="16zy">
+              }} >
                 BOOK NOW 
               </button>
             </div>
@@ -451,8 +450,19 @@ useEffect(() => {
 
                 <input className={styles.form_group_email_input} placeholder="Special Notes" type="text" />
               </div>
+                <div className={styles.terms_and_condition_input}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkbox}
+                    checked={isTermsAccepted}
+                    onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                  />
 
-              <button className={styles.back_btn} onClick={handleSubmit}>Confirm Booking</button>
+                  <span className={styles.checkmark}></span>
+
+                  <p>I agree to the Terms of Service and Cancellation Policy.</p>
+                </div>
+              <button className={styles.back_btn} onClick={handleSubmit} disabled={!isTermsAccepted}>Confirm Booking</button>
               <button className={styles.back_btn} onClick={() => setIsBooking(false)}>Back</button>
             </div>
 
@@ -540,6 +550,12 @@ useEffect(() => {
                     {/* Card Number */}
                     <div className={styles.card_details}>
 
+                              <Image
+            src="/payment_logo.png"
+            alt="Background"
+            width="612"
+            height="121"
+            className={styles.bank_logos}></Image>
                     <div className={styles.payment_inputs}>
                       <label htmlFor="card-number">Card Number</label>
                       {/*
