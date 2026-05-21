@@ -9,10 +9,10 @@ export default function PaymentResultContent() {
   const [orderRef, setOrderRef] = useState("");
 
   useEffect(() => {
-    const orderId      = sessionStorage.getItem("mpgs_order_id");
+    const orderId       = sessionStorage.getItem("mpgs_order_id");
     const transactionId = sessionStorage.getItem("mpgs_transaction_id") || "1";
-    const sessionId    = sessionStorage.getItem("mpgs_session_id");
-    const amount       = sessionStorage.getItem("mpgs_amount");
+    const sessionId     = sessionStorage.getItem("mpgs_session_id");
+    const amount        = sessionStorage.getItem("mpgs_amount");
 
     setOrderRef(orderId || "");
 
@@ -76,7 +76,7 @@ export default function PaymentResultContent() {
             style={{
               marginTop: "1rem", padding: "0.6rem 1.5rem",
               background: "#670770", color: "#fff",
-              border: "none", borderRadius: "6px", cursor: "pointer"
+              border: "none", borderRadius: "6px", cursor: "pointer",
             }}
           >
             Try Again
