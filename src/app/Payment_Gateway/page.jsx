@@ -4,11 +4,12 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
-import styles from "./page.module.css";
+import styles from "../page.module.css";
 import { BedDouble } from "lucide-react";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber, parsePhoneNumber } from "react-phone-number-input";
 import { getNames } from "country-list";
+
 
 const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: false });
 
