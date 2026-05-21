@@ -73,7 +73,7 @@ export async function POST(request) {
       apiOperation: "AUTHENTICATE_PAYER",
       
       authentication: {
-          redirectResponseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment-result?order_id=${orderId}&transaction_id=${transactionId}&session_id=${sessionId}&amount=${amount}`,
+          redirectResponseUrl: `${process.env.NEXT_PUBLIC_APP_URL || "https://tangerine-tours-hotel-booking-app-1094214581019.europe-west1.run.app"}/payment-result`,
         },
 
       correlationId: `corr-${Date.now()}`,

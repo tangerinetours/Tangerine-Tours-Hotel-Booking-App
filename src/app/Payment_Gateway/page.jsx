@@ -193,6 +193,33 @@ export default function Home() {
     };
   }, [isPayment, sessionId]);
 
+  const handleChallengeComplete = async () => {
+  setPayStatus(PAY_STATUS.PROCESSING);
+  setPayError("");
+  try {
+    const res = await fetch("/api/capture-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId: orderIdRef.current,
+        transactionId: "1",
+        sessionId: sessionIdRef.current,
+        amount: amountRef.current,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setPayStatus(PAY_STATUS.SUCCESS);
+    } else {
+      setPayError(`Payment failed (${data.gatewayCode || "Unknown"}). Please try again.`);
+      setPayStatus(PAY_STATUS.FAILED);
+    }
+  } catch {
+    setPayError("Network error during capture. Please try again.");
+    setPayStatus(PAY_STATUS.FAILED);
+  }
+};
+
   const handlePayNow = () => {
     if (!window.PaymentSession) {
       setPayError("Payment library not loaded. Please refresh and try again.");
@@ -461,13 +488,33 @@ export default function Home() {
                     </p>
                     <iframe
                       srcDoc={challengeHtml}
-                      style={{ width: "100%", height: "fit-content", border: "2px solid #670770", borderRadius: "0.5rem" }}
-                      sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation"
+                      style={{ width: "100%", height: "400px", border: "2px solid #670770", borderRadius: "0.5rem" }}
+                      sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation-by-user-activation"
                       title="3D Secure Verification"
+                      onLoad={(e) => {
+                        // When iframe navigates to payment-result, it means 3DS is complete
+                        try {
+                          const iframeUrl = e.target.contentWindow?.location?.href;
+                          if (iframeUrl && iframeUrl.includes("/payment-result")) {
+                            handleChallengeComplete();
+                          }
+                        } catch {
+                          // Cross-origin, ignore — we use polling instead
+                        }
+                      }}
                     />
+                    <button
+                      onClick={handleChallengeComplete}
+                      style={{
+                        marginTop: "0.5rem", padding: "0.5rem 1rem",
+                        background: "#670770", color: "#fff",
+                        border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem"
+                      }}
+                    >
+                      ✅ I have completed verification — Continue
+                    </button>
                   </div>
                 )}
-
                 {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
                   <>
                     <div className={styles.card_details}>
