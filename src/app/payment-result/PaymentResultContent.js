@@ -9,10 +9,11 @@ export default function PaymentResultContent() {
   const [orderRef, setOrderRef] = useState("");
 
   useEffect(() => {
-    const orderId       = sessionStorage.getItem("mpgs_order_id");
-    const transactionId = sessionStorage.getItem("mpgs_transaction_id") || "1";
-    const sessionId     = sessionStorage.getItem("mpgs_session_id");
-    const amount        = sessionStorage.getItem("mpgs_amount");
+    // Try URL params first (most reliable after 3DS redirect)
+    const orderId       = params.get("order_id")       || sessionStorage.getItem("mpgs_order_id");
+    const transactionId = params.get("transaction_id") || sessionStorage.getItem("mpgs_transaction_id") || "1";
+    const sessionId     = params.get("session_id")     || sessionStorage.getItem("mpgs_session_id");
+    const amount        = params.get("amount")         || sessionStorage.getItem("mpgs_amount");
 
     setOrderRef(orderId || "");
 

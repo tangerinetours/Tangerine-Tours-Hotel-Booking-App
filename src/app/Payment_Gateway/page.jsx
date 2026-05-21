@@ -213,15 +213,32 @@ export default function Home() {
       });
       const data = await res.json();
 
-      if (data.requiresChallenge) {
-        // ✅ Save to sessionStorage BEFORE showing challenge
-        sessionStorage.setItem("mpgs_order_id", oid);
-        sessionStorage.setItem("mpgs_transaction_id", "1");
-        sessionStorage.setItem("mpgs_session_id", sid);
-        sessionStorage.setItem("mpgs_amount", String(amount));
-        setChallengeHtml(data.challengeHtml);
-        setPayStatus(PAY_STATUS.CHALLENGE);
-      } else if (data.success) {
+        if (data.requiresChallenge) {
+      // Pass data via URL params instead of sessionStorage (survives full page redirects)
+      const params = new URLSearchParams({
+        order_id: oid,
+        transaction_id: "1",
+        session_id: sid,
+        amount: String(amount),
+      });
+
+      // Inject the params into the challenge HTML so the redirectResponseUrl carries them
+      const updatedHtml = data.challengeHtml.replace(
+        process.env.NEXT_PUBLIC_APP_URL + "/payment-result",
+        `${process.env.NEXT_PUBLIC_APP_URL}/payment-result?${params.toString()}`
+      );
+
+      setChallengeHtml(updatedHtml.length > 10 ? updatedHtml : data.challengeHtml);
+
+      // Also keep sessionStorage as fallback
+      sessionStorage.setItem("mpgs_order_id", oid);
+      sessionStorage.setItem("mpgs_transaction_id", "1");
+      sessionStorage.setItem("mpgs_session_id", sid);
+      sessionStorage.setItem("mpgs_amount", String(amount));
+
+      setChallengeHtml(data.challengeHtml);
+      setPayStatus(PAY_STATUS.CHALLENGE);
+    } else if (data.success) {
         setPayStatus(PAY_STATUS.SUCCESS);
       } else {
         const code = data.gatewayCode || data.result || "UNKNOWN";

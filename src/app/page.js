@@ -527,7 +527,7 @@ useEffect(() => {
 
                 {/* ── 3DS Challenge iframe ── */}
                 {payStatus === PAY_STATUS.CHALLENGE && challengeHtml && (
-                  <div style={{ marginBottom: "0.9rem" }}>
+                  <div style={{ marginBottom: "0.9rem"}}>
                     <p style={{ color: "#670770", fontWeight: "bold", marginBottom: "0.5rem" }}>
                       🔒 Please complete 3D Secure verification:
                     </p>
