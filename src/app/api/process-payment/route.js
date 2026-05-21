@@ -39,7 +39,7 @@ export async function POST(request) {
       },
       correlationId: `corr-${Date.now()}`,
       order: {
-        currency: "LKR",
+        currency: "USD",
       },
       session: {
         id: sessionId,
@@ -91,7 +91,7 @@ export async function POST(request) {
       },
       order: {
         amount: amount.toFixed(2),
-        currency: "LKR",
+        currency: "USD",
       },
       session: {
         id: sessionId,
@@ -166,7 +166,7 @@ async function executePay({ baseUrl, merchantId, credentials, orderId, transacti
     },
     order: {
       amount: amount.toFixed(2),
-      currency: "LKR",
+      currency: "USD",
       reference: orderId,
     },
     session: {

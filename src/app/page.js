@@ -16,7 +16,7 @@ const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: fals
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MERCHANT_ID = process.env.NEXT_PUBLIC_MPGS_MERCHANT_ID;
-const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/TESTTANGERINELKR/session.js`;
+const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/TESTTANGERINEUSD/session.js`;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ROOM_PRICES = { SINGLE: 60, DOUBLE: 60, TRIPLE: 85 };
 const GALLERY_IMAGES = [
