@@ -73,7 +73,7 @@ export async function POST(request) {
       apiOperation: "AUTHENTICATE_PAYER",
       
       authentication: {
-          redirectResponseUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/payment-result?order_id=${orderId}&transaction_id=${transactionId}&session_id=${sessionId}&amount=${amount}`,
+          redirectResponseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment-result?order_id=${orderId}&transaction_id=${transactionId}&session_id=${sessionId}&amount=${amount}`,
         },
 
       correlationId: `corr-${Date.now()}`,
