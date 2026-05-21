@@ -1,6 +1,4 @@
 // /app/api/capture-payment/route.js
-// Called from payment-result page AFTER 3DS challenge redirect completes
-
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -18,27 +16,18 @@ export async function POST(req) {
 
     const payBody = {
       apiOperation: "PAY",
-      authentication: {
-        transactionId: transactionId,
-      },
+      authentication: { transactionId },
       order: {
         amount: parseFloat(amount).toFixed(2),
-        currency: "LKR",           // ← fix: was USD
+        currency: "LKR",
         reference: orderId,
       },
-      session: {
-        id: sessionId,
-      },
-      sourceOfFunds: {
-        type: "CARD",
-      },
-      transaction: {
-        reference: orderId,
-      },
+      session: { id: sessionId },
+      sourceOfFunds: { type: "CARD" },
+      transaction: { reference: orderId },
     };
 
     console.log("[MPGS] Capture PAY calling...", payUrl);
-
     const payResponse = await fetch(payUrl, {
       method: "PUT",
       headers: {
@@ -51,13 +40,10 @@ export async function POST(req) {
     const payData = await payResponse.json();
     console.log("[MPGS] Capture PAY response:", JSON.stringify(payData, null, 2));
 
-    const gatewayCode = payData?.response?.gatewayCode;
-    const result = payData?.result;
-
     return NextResponse.json({
-      success: result === "SUCCESS" && gatewayCode === "APPROVED",
-      gatewayCode,
-      result,
+      success: payData?.result === "SUCCESS" && payData?.response?.gatewayCode === "APPROVED",
+      gatewayCode: payData?.response?.gatewayCode,
+      result: payData?.result,
       orderId,
       details: payData,
     });
