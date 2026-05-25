@@ -10,10 +10,8 @@ import "react-phone-number-input/style.css";
 import { isValidPhoneNumber, parsePhoneNumber } from "react-phone-number-input";
 import { getNames } from "country-list";
 
-
 const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: false });
 
-const MERCHANT_ID = process.env.NEXT_PUBLIC_MPGS_MERCHANT_ID;
 const SESSION_JS_URL = `https://cbcmpgs.gateway.mastercard.com/form/version/100/merchant/TESTTANGERINEUSD/session.js`;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ROOM_PRICES = { SINGLE: 60, DOUBLE: 60, TRIPLE: 85 };
@@ -64,6 +62,7 @@ export default function Home() {
   const formatDate = (d) => (d ? d.toISOString().split("T")[0] : "");
   const countries = getNames();
 
+  // STEP 1 — Validate form and show payment panel
   const handleSubmit = () => {
     const newErrors = {};
     if (!formData.phone || !isValidPhoneNumber(formData.phone))
@@ -96,6 +95,7 @@ export default function Home() {
     amountRef.current = totalCost;
   };
 
+  // STEP 2 — Create payment session
   useEffect(() => {
     if (!isPayment) return;
     const createSession = async () => {
@@ -108,9 +108,7 @@ export default function Home() {
           body: JSON.stringify({ amount: totalCost }),
         });
         const data = await res.json();
-        if (!res.ok || !data.sessionId) {
-          throw new Error(data.error || "Failed to create payment session");
-        }
+        if (!res.ok || !data.sessionId) throw new Error(data.error || "Failed to create payment session");
         setSessionId(data.sessionId);
         setOrderId(data.orderId);
         sessionIdRef.current = data.sessionId;
@@ -125,6 +123,7 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPayment]);
 
+  // STEP 3 — Configure PaymentSession
   const configurePaymentSession = useCallback((sid) => {
     if (!window.PaymentSession) return;
     window.PaymentSession.configure({
@@ -140,10 +139,9 @@ export default function Home() {
       },
       frameEmbeddingMitigation: ["javascript"],
       callbacks: {
-        initialized: (response) => {
-          console.log("[PaymentSession] Initialized:", response);
-        },
+        initialized: (response) => { console.log("[PaymentSession] Initialized:", response); },
         formSessionUpdate: async (response) => {
+          console.log("[PaymentSession] formSessionUpdate:", response);
           if (response.status === "ok") {
             await processPayment(sessionIdRef.current, orderIdRef.current, amountRef.current);
           } else if (response.status === "fields_in_error") {
@@ -163,15 +161,11 @@ export default function Home() {
           }
         },
       },
-      interaction: {
-        displayControl: {
-          formatCard: "EMBOSSED",
-          invalidFieldCharacters: "REJECT",
-        },
-      },
+      interaction: { displayControl: { formatCard: "EMBOSSED", invalidFieldCharacters: "REJECT" } },
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Load session.js script
   useEffect(() => {
     if (!isPayment || !sessionId) return;
     const existing = document.getElementById("mpgs-session-js");
@@ -180,46 +174,39 @@ export default function Home() {
     script.id = "mpgs-session-js";
     script.src = SESSION_JS_URL;
     script.async = true;
-    script.onload = () => {
-      setTimeout(() => configurePaymentSession(sessionId), 300);
-    };
-    script.onerror = () => {
-      setPayError("Failed to load payment library. Please refresh.");
-    };
+    script.onload = () => { setTimeout(() => configurePaymentSession(sessionId), 300); };
+    script.onerror = () => { setPayError("Failed to load payment library. Please refresh."); };
     document.body.appendChild(script);
-    return () => {
-      const s = document.getElementById("mpgs-session-js");
-      if (s) s.remove();
-    };
+    return () => { const s = document.getElementById("mpgs-session-js"); if (s) s.remove(); };
   }, [isPayment, sessionId]);
 
-const handleChallengeComplete = async () => {
-  setPayStatus(PAY_STATUS.PROCESSING);
-  setPayError("");
-  try {
-    const res = await fetch("/api/capture-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId: orderIdRef.current,
-        transactionId: "1",
-        sessionId: sessionIdRef.current,
-        amount: amountRef.current,
-      }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      setPayStatus(PAY_STATUS.SUCCESS);
-    } else {
-      setPayError(`Payment failed (${data.gatewayCode || "Unknown"}). Please try again.`);
-      setPayStatus(PAY_STATUS.FAILED);
-    }
-  } catch {
-    setPayError("Network error during capture. Please try again.");
-    setPayStatus(PAY_STATUS.FAILED);
-  }
-};
+  // ── KEY FIX: When challengeHtml is set, do a full-page redirect to Mastercard ACS ──
+  useEffect(() => {
+    if (payStatus !== PAY_STATUS.CHALLENGE || !challengeHtml) return;
 
+    // Save all data to sessionStorage before leaving the page
+    sessionStorage.setItem("mpgs_order_id", orderIdRef.current);
+    sessionStorage.setItem("mpgs_transaction_id", "1");
+    sessionStorage.setItem("mpgs_session_id", sessionIdRef.current);
+    sessionStorage.setItem("mpgs_amount", String(amountRef.current));
+
+    // Append the challenge form to body and submit it as full page redirect
+    const container = document.createElement("div");
+    container.innerHTML = challengeHtml;
+    document.body.appendChild(container);
+
+    const form = container.querySelector("form");
+    if (form) {
+      form.target = "_self"; // full page, not iframe
+      form.submit();
+    }
+
+    return () => {
+      if (container.parentNode) container.parentNode.removeChild(container);
+    };
+  }, [payStatus, challengeHtml]);
+
+  // STEP 4 — PAY NOW button
   const handlePayNow = () => {
     if (!window.PaymentSession) {
       setPayError("Payment library not loaded. Please refresh and try again.");
@@ -230,44 +217,34 @@ const handleChallengeComplete = async () => {
     window.PaymentSession.updateSessionFromForm("card");
   };
 
-  // ── THIS IS THE KEY FIXED FUNCTION ──
-const processPayment = async (sid, oid, amount) => {
-  try {
-    const res = await fetch("/api/process-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId: sid, orderId: oid, amount }),
-    });
-    const data = await res.json();
+  // STEP 5 — Process payment after card captured
+  const processPayment = async (sid, oid, amount) => {
+    try {
+      const res = await fetch("/api/process-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: sid, orderId: oid, amount }),
+      });
+      const data = await res.json();
+      console.log("[Payment] process-payment response:", data);
 
-    if (data.requiresChallenge) {
-      // Save to sessionStorage before leaving the page
-      sessionStorage.setItem("mpgs_order_id", oid);
-      sessionStorage.setItem("mpgs_transaction_id", "1");
-      sessionStorage.setItem("mpgs_session_id", sid);
-      sessionStorage.setItem("mpgs_amount", String(amount));
-
-      // Full page redirect to Mastercard ACS (iframe blocks it)
-      const div = document.createElement("div");
-      div.innerHTML = data.challengeHtml;
-      document.body.appendChild(div);
-      const form = div.querySelector("form");
-      if (form) {
-        form.target = "_self";
-        form.submit();
+      if (data.requiresChallenge) {
+        // Set challengeHtml — the useEffect above will trigger full-page redirect
+        setChallengeHtml(data.challengeHtml);
+        setPayStatus(PAY_STATUS.CHALLENGE);
+      } else if (data.success) {
+        setPayStatus(PAY_STATUS.SUCCESS);
+      } else {
+        const code = data.gatewayCode || data.result || "UNKNOWN";
+        setPayError(`Payment failed (${code}). Please try again or use a different card.`);
+        setPayStatus(PAY_STATUS.FAILED);
       }
-    } else if (data.success) {
-      setPayStatus(PAY_STATUS.SUCCESS);
-    } else {
-      const code = data.gatewayCode || data.result || "UNKNOWN";
-      setPayError(`Payment failed (${code}). Please try again or use a different card.`);
+    } catch (err) {
+      console.error("[Payment] processPayment error:", err);
+      setPayError("Network error. Please try again.");
       setPayStatus(PAY_STATUS.FAILED);
     }
-  } catch (err) {
-    setPayError("Network error. Please try again.");
-    setPayStatus(PAY_STATUS.FAILED);
-  }
-};
+  };
 
   const isInputDisabled = payStatus === PAY_STATUS.PROCESSING || payStatus === PAY_STATUS.CHALLENGE;
   const isBtnDisabled =
@@ -280,13 +257,7 @@ const processPayment = async (sid, oid, amount) => {
     <>
       <div className={styles.container}>
         <div className={styles.background_wrapper}>
-          <Image
-            src="/background_image.jpg"
-            alt="Background"
-            fill
-            priority
-            className={styles.background_image}
-          />
+          <Image src="/background_image.jpg" alt="Background" fill priority className={styles.background_image} />
         </div>
 
         <div className={styles.content_body} suppressHydrationWarning>
@@ -312,13 +283,8 @@ const processPayment = async (sid, oid, amount) => {
                     </div>
                   </div>
                   <div className={styles.room_catogaries_container}>
-                    {[
-                      { key: "SINGLE", icons: 1 },
-                      { key: "DOUBLE", icons: 2 },
-                      { key: "TRIPLE", icons: 3 },
-                    ].map(({ key, icons }) => (
-                      <div
-                        key={key}
+                    {[{ key: "SINGLE", icons: 1 }, { key: "DOUBLE", icons: 2 }, { key: "TRIPLE", icons: 3 }].map(({ key, icons }) => (
+                      <div key={key}
                         className={`${styles.room_catogary} ${selectedRoom === key ? styles.selected : ""}`}
                         onClick={() => setSelectedRoom(key)}
                       >
@@ -338,10 +304,7 @@ const processPayment = async (sid, oid, amount) => {
                   </div>
                 </div>
               </div>
-              <button className={styles.book_now_btn} onClick={() => {
-                if (!startDate || !endDate) return;
-                setIsBooking(true);
-              }}>
+              <button className={styles.book_now_btn} onClick={() => { if (!startDate || !endDate) return; setIsBooking(true); }}>
                 BOOK NOW
               </button>
             </div>
@@ -361,25 +324,19 @@ const processPayment = async (sid, oid, amount) => {
               </div>
               <div className={styles.booking_form_2}>
                 <div className={styles.form_group_name_inputs}>
-                  <input placeholder="First Name" value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
-                  <input placeholder="Last Name" value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} />
+                  <input placeholder="First Name" value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
+                  <input placeholder="Last Name" value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} />
                 </div>
                 <PhoneInput
                   placeholder="Phone Number" international countryCallingCodeEditable={false}
                   defaultCountry={undefined} value={formData.phone}
                   onChange={(value) => {
                     setFormData({ ...formData, phone: value });
-                    setErrors((prev) => ({
-                      ...prev,
-                      phone: !value || !isValidPhoneNumber(value) ? "Invalid phone number" : "",
-                    }));
+                    setErrors((prev) => ({ ...prev, phone: !value || !isValidPhoneNumber(value) ? "Invalid phone number" : "" }));
                   }}
                 />
                 {errors.phone && <p style={{ color: "red", fontSize: "0.9rem", fontWeight: "bold", paddingBottom: "0.5rem" }}>{errors.phone}</p>}
-                <input className={styles.form_group_email_input} placeholder="Email Address"
-                  value={formData.email}
+                <input className={styles.form_group_email_input} placeholder="Email Address" value={formData.email}
                   onChange={(e) => {
                     const v = e.target.value;
                     setFormData({ ...formData, email: v });
@@ -401,21 +358,14 @@ const processPayment = async (sid, oid, amount) => {
                     {errors.nationality && <p style={{ color: "red", fontSize: "0.9rem", fontWeight: "bold", paddingBottom: "0.5rem" }}>{errors.nationality}</p>}
                   </div>
                   <div className={styles.form_group_name_inputs}>
-                    <input placeholder="Adults" type="number" min={1} value={formData.adults}
-                      onChange={(e) => setFormData({ ...formData, adults: e.target.value })} />
-                    <input placeholder="Children" type="number" min={0} value={formData.children}
-                      onChange={(e) => setFormData({ ...formData, children: e.target.value })} />
+                    <input placeholder="Adults" type="number" min={1} value={formData.adults} onChange={(e) => setFormData({ ...formData, adults: e.target.value })} />
+                    <input placeholder="Children" type="number" min={0} value={formData.children} onChange={(e) => setFormData({ ...formData, children: e.target.value })} />
                   </div>
                 </div>
                 <input className={styles.form_group_email_input} placeholder="Special Notes" type="text" />
               </div>
               <div className={styles.terms_and_condition_input}>
-                <input
-                  type="checkbox"
-                  className={styles.checkbox}
-                  checked={isTermsAccepted}
-                  onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                />
+                <input type="checkbox" className={styles.checkbox} checked={isTermsAccepted} onChange={(e) => setIsTermsAccepted(e.target.checked)} />
                 <span className={styles.checkmark}></span>
                 <p>I agree to the Terms of Service and Cancellation Policy.</p>
               </div>
@@ -448,11 +398,19 @@ const processPayment = async (sid, oid, amount) => {
                   </div>
                 </div>
 
+                {/* Status messages */}
                 {payStatus === PAY_STATUS.LOADING_SESSION && (
                   <p style={{ color: "#670770", marginBottom: "0.9rem" }}>⏳ Initialising secure payment...</p>
                 )}
                 {payStatus === PAY_STATUS.PROCESSING && (
                   <p style={{ color: "#670770", marginBottom: "0.9rem" }}>⏳ Processing your payment...</p>
+                )}
+                {/* 3DS challenge — show redirect message, useEffect handles actual redirect */}
+                {payStatus === PAY_STATUS.CHALLENGE && (
+                  <div style={{ textAlign: "center", padding: "2rem" }}>
+                    <p style={{ color: "#670770", fontWeight: "bold" }}>🔒 Redirecting to your bank for verification...</p>
+                    <p style={{ color: "#666", fontSize: "0.85rem" }}>Please do not close this page.</p>
+                  </div>
                 )}
                 {payStatus === PAY_STATUS.SUCCESS && (
                   <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", borderRadius: "0.5rem", padding: "0.5rem", marginBottom: "0.9rem" }}>
@@ -472,70 +430,39 @@ const processPayment = async (sid, oid, amount) => {
                   </div>
                 )}
 
-                {payStatus === PAY_STATUS.CHALLENGE && challengeHtml && (
-                  <div style={{ marginBottom: "0.9rem" }}>
-                    <p style={{ color: "#670770", fontWeight: "bold", marginBottom: "0.5rem" }}>
-                      🔒 Please complete 3D Secure verification:
-                    </p>
-                    
-                    {payStatus === PAY_STATUS.CHALLENGE && (
-                      <div style={{ textAlign: "center", padding: "2rem" }}>
-                        <p style={{ color: "#670770", fontWeight: "bold" }}>
-                          🔒 Redirecting to your bank for verification...
-                        </p>
-                        <p style={{ color: "#666", fontSize: "0.85rem" }}>Please do not close this page.</p>
-                      </div>
-                    )}
-                    <button
-                      onClick={handleChallengeComplete}
-                      style={{
-                        marginTop: "0.5rem", padding: "0.5rem 1rem",
-                        background: "#670770", color: "#fff",
-                        border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem"
-                      }}
-                    >
-                      ✅ I have completed verification — Continue
-                    </button>
-                  </div>
-                )}
+                {/* Card fields — hidden during challenge/success */}
                 {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
-                  <>
-                    <div className={styles.card_details}>
-                      <Image src="/payment_logo.png" alt="Payment" width="612" height="121" className={styles.bank_logos} />
-                      <div className={styles.payment_inputs}>
-                        <label htmlFor="card-number">Card Number</label>
-                        <input className={styles.gateway_input} id="card-number" type="text" readOnly disabled={isInputDisabled} title="Card Number" aria-label="Enter your card number" />
+                  <div className={styles.card_details}>
+                    <Image src="/payment_logo.png" alt="Payment" width="612" height="121" className={styles.bank_logos} />
+                    <div className={styles.payment_inputs}>
+                      <label htmlFor="card-number">Card Number</label>
+                      <input className={styles.gateway_input} id="card-number" type="text" readOnly disabled={isInputDisabled} title="Card Number" aria-label="Enter your card number" />
+                    </div>
+                    <div className={styles.payment_inputs_2}>
+                      <div style={styles.payment_inputs_3}>
+                        <label htmlFor="expiry-month">Exp Month</label>
+                        <input className={styles.gateway_input} id="expiry-month" type="text" readOnly disabled={isInputDisabled} title="Expiry Month (MM)" aria-label="Two digit expiry month" style={{ width: "60px" }} />
                       </div>
-                      <div className={styles.payment_inputs_2}>
-                        <div style={styles.payment_inputs_3}>
-                          <label htmlFor="expiry-month">Exp Month</label>
-                          <input className={styles.gateway_input} id="expiry-month" type="text" readOnly disabled={isInputDisabled} title="Expiry Month (MM)" aria-label="Two digit expiry month" style={{ width: "60px" }} />
-                        </div>
-                        <div style={styles.payment_inputs_3}>
-                          <label htmlFor="expiry-year">Exp Year</label>
-                          <input className={styles.gateway_input} id="expiry-year" type="text" readOnly disabled={isInputDisabled} title="Expiry Year (YY)" aria-label="Two digit expiry year" style={{ width: "60px" }} />
-                        </div>
-                        <div style={styles.payment_inputs_3}>
-                          <label htmlFor="security-code">CVV</label>
-                          <input className={styles.gateway_input} id="security-code" type="text" readOnly disabled={isInputDisabled} title="Security Code" aria-label="Three digit CVV security code" style={{ width: "80px" }} />
-                        </div>
+                      <div style={styles.payment_inputs_3}>
+                        <label htmlFor="expiry-year">Exp Year</label>
+                        <input className={styles.gateway_input} id="expiry-year" type="text" readOnly disabled={isInputDisabled} title="Expiry Year (YY)" aria-label="Two digit expiry year" style={{ width: "60px" }} />
                       </div>
-                      <div className={styles.payment_inputs}>
-                        <label htmlFor="cardholder-name">Name on Card</label>
-                        <input className={styles.gateway_input} id="cardholder-name" type="text" readOnly disabled={isInputDisabled} title="Cardholder Name" aria-label="Enter name on card" />
+                      <div style={styles.payment_inputs_3}>
+                        <label htmlFor="security-code">CVV</label>
+                        <input className={styles.gateway_input} id="security-code" type="text" readOnly disabled={isInputDisabled} title="Security Code" aria-label="Three digit CVV security code" style={{ width: "80px" }} />
                       </div>
                     </div>
-                  </>
+                    <div className={styles.payment_inputs}>
+                      <label htmlFor="cardholder-name">Name on Card</label>
+                      <input className={styles.gateway_input} id="cardholder-name" type="text" readOnly disabled={isInputDisabled} title="Cardholder Name" aria-label="Enter name on card" />
+                    </div>
+                  </div>
                 )}
 
+                {/* Action buttons */}
                 <div className={styles.payment_buttons}>
                   {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
-                    <button
-                      className={styles.back_btn}
-                      onClick={handlePayNow}
-                      disabled={isBtnDisabled}
-                      style={{ opacity: isBtnDisabled ? 0.6 : 1 }}
-                    >
+                    <button className={styles.back_btn} onClick={handlePayNow} disabled={isBtnDisabled} style={{ opacity: isBtnDisabled ? 0.6 : 1 }}>
                       {payStatus === PAY_STATUS.PROCESSING ? "Processing..." : "PAY NOW"}
                     </button>
                   )}
@@ -545,13 +472,9 @@ const processPayment = async (sid, oid, amount) => {
                       disabled={isInputDisabled}
                       style={{ opacity: isInputDisabled ? 0.6 : 1 }}
                       onClick={() => {
-                        setIsPayment(false);
-                        setIsBooking(true);
-                        setPayStatus(PAY_STATUS.IDLE);
-                        setPayError("");
-                        setSessionId("");
-                        setOrderId("");
-                        setChallengeHtml("");
+                        setIsPayment(false); setIsBooking(true);
+                        setPayStatus(PAY_STATUS.IDLE); setPayError("");
+                        setSessionId(""); setOrderId(""); setChallengeHtml("");
                       }}
                     >
                       BACK
