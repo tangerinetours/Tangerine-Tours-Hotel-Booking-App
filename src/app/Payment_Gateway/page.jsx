@@ -193,7 +193,7 @@ export default function Home() {
     };
   }, [isPayment, sessionId]);
 
-  const handleChallengeComplete = async () => {
+const handleChallengeComplete = async () => {
   setPayStatus(PAY_STATUS.PROCESSING);
   setPayError("");
   try {
