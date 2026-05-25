@@ -240,15 +240,26 @@ const handleChallengeComplete = async () => {
       });
       const data = await res.json();
 
-        if (data.requiresChallenge) {
-      // Pass data via URL params instead of sessionStorage (survives full page redirects)
-      const params = new URLSearchParams({
-        order_id: oid,
-        transaction_id: "1",
-        session_id: sid,
-        amount: String(amount),
-      });
+if (data.requiresChallenge) {
+  // Save data to sessionStorage before leaving the page
+  sessionStorage.setItem("mpgs_order_id", oid);
+  sessionStorage.setItem("mpgs_transaction_id", "1");
+  sessionStorage.setItem("mpgs_session_id", sid);
+  sessionStorage.setItem("mpgs_amount", String(amount));
 
+  // Extract the ACS URL and cReq from the challenge data
+  // Create a full-page form POST to Mastercard ACS
+  const div = document.createElement("div");
+  div.innerHTML = data.challengeHtml;
+  document.body.appendChild(div);
+
+  // Submit the form — this redirects the whole browser to Mastercard
+  const form = div.querySelector("form");
+  if (form) {
+    form.target = "_self"; // full page redirect, not iframe
+    form.submit();
+  }
+}
       // Inject the params into the challenge HTML so the redirectResponseUrl carries them
       const updatedHtml = data.challengeHtml.replace(
         process.env.NEXT_PUBLIC_APP_URL + "/payment-result",
