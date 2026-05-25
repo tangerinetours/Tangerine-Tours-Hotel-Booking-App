@@ -231,63 +231,43 @@ const handleChallengeComplete = async () => {
   };
 
   // ── THIS IS THE KEY FIXED FUNCTION ──
-  const processPayment = async (sid, oid, amount) => {
-    try {
-      const res = await fetch("/api/process-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId: sid, orderId: oid, amount }),
-      });
-      const data = await res.json();
+const processPayment = async (sid, oid, amount) => {
+  try {
+    const res = await fetch("/api/process-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId: sid, orderId: oid, amount }),
+    });
+    const data = await res.json();
 
-if (data.requiresChallenge) {
-  // Save data to sessionStorage before leaving the page
-  sessionStorage.setItem("mpgs_order_id", oid);
-  sessionStorage.setItem("mpgs_transaction_id", "1");
-  sessionStorage.setItem("mpgs_session_id", sid);
-  sessionStorage.setItem("mpgs_amount", String(amount));
-
-  // Extract the ACS URL and cReq from the challenge data
-  // Create a full-page form POST to Mastercard ACS
-  const div = document.createElement("div");
-  div.innerHTML = data.challengeHtml;
-  document.body.appendChild(div);
-
-  // Submit the form — this redirects the whole browser to Mastercard
-  const form = div.querySelector("form");
-  if (form) {
-    form.target = "_self"; // full page redirect, not iframe
-    form.submit();
-  }
-}
-      // Inject the params into the challenge HTML so the redirectResponseUrl carries them
-      const updatedHtml = data.challengeHtml.replace(
-        process.env.NEXT_PUBLIC_APP_URL + "/payment-result",
-        `${process.env.NEXT_PUBLIC_APP_URL}/payment-result?${params.toString()}`
-      );
-
-      setChallengeHtml(updatedHtml.length > 10 ? updatedHtml : data.challengeHtml);
-
-      // Also keep sessionStorage as fallback
+    if (data.requiresChallenge) {
+      // Save to sessionStorage before leaving the page
       sessionStorage.setItem("mpgs_order_id", oid);
       sessionStorage.setItem("mpgs_transaction_id", "1");
       sessionStorage.setItem("mpgs_session_id", sid);
       sessionStorage.setItem("mpgs_amount", String(amount));
 
-      setChallengeHtml(data.challengeHtml);
-      setPayStatus(PAY_STATUS.CHALLENGE);
-    } else if (data.success) {
-        setPayStatus(PAY_STATUS.SUCCESS);
-      } else {
-        const code = data.gatewayCode || data.result || "UNKNOWN";
-        setPayError(`Payment failed (${code}). Please try again or use a different card.`);
-        setPayStatus(PAY_STATUS.FAILED);
+      // Full page redirect to Mastercard ACS (iframe blocks it)
+      const div = document.createElement("div");
+      div.innerHTML = data.challengeHtml;
+      document.body.appendChild(div);
+      const form = div.querySelector("form");
+      if (form) {
+        form.target = "_self";
+        form.submit();
       }
-    } catch (err) {
-      setPayError("Network error. Please try again.");
+    } else if (data.success) {
+      setPayStatus(PAY_STATUS.SUCCESS);
+    } else {
+      const code = data.gatewayCode || data.result || "UNKNOWN";
+      setPayError(`Payment failed (${code}). Please try again or use a different card.`);
       setPayStatus(PAY_STATUS.FAILED);
     }
-  };
+  } catch (err) {
+    setPayError("Network error. Please try again.");
+    setPayStatus(PAY_STATUS.FAILED);
+  }
+};
 
   const isInputDisabled = payStatus === PAY_STATUS.PROCESSING || payStatus === PAY_STATUS.CHALLENGE;
   const isBtnDisabled =
@@ -497,23 +477,15 @@ if (data.requiresChallenge) {
                     <p style={{ color: "#670770", fontWeight: "bold", marginBottom: "0.5rem" }}>
                       🔒 Please complete 3D Secure verification:
                     </p>
-                    <iframe
-                      srcDoc={challengeHtml}
-                      style={{ width: "100%", height: "400px", border: "2px solid #670770", borderRadius: "0.5rem" }}
-                      sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation-by-user-activation"
-                      title="3D Secure Verification"
-                      onLoad={(e) => {
-                        // When iframe navigates to payment-result, it means 3DS is complete
-                        try {
-                          const iframeUrl = e.target.contentWindow?.location?.href;
-                          if (iframeUrl && iframeUrl.includes("/payment-result")) {
-                            handleChallengeComplete();
-                          }
-                        } catch {
-                          // Cross-origin, ignore — we use polling instead
-                        }
-                      }}
-                    />
+                    
+                    {payStatus === PAY_STATUS.CHALLENGE && (
+                      <div style={{ textAlign: "center", padding: "2rem" }}>
+                        <p style={{ color: "#670770", fontWeight: "bold" }}>
+                          🔒 Redirecting to your bank for verification...
+                        </p>
+                        <p style={{ color: "#666", fontSize: "0.85rem" }}>Please do not close this page.</p>
+                      </div>
+                    )}
                     <button
                       onClick={handleChallengeComplete}
                       style={{
