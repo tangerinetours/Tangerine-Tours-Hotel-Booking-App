@@ -9,11 +9,12 @@ export default function PaymentResultContent() {
   const [orderRef, setOrderRef] = useState("");
 
   useEffect(() => {
-    // Try URL params first (most reliable after 3DS redirect)
-    const orderId       = params.get("order_id")       || sessionStorage.getItem("mpgs_order_id");
-    const transactionId = params.get("transaction_id") || sessionStorage.getItem("mpgs_transaction_id") || "1";
-    const sessionId     = params.get("session_id")     || sessionStorage.getItem("mpgs_session_id");
-    const amount        = params.get("amount")         || sessionStorage.getItem("mpgs_amount");
+    const orderId       = params.get("order_id");
+    const transactionId = params.get("transaction_id") || "1";
+    const sessionId     = params.get("session_id");
+    const amount        = params.get("amount");
+
+    console.log("[PaymentResult] Params:", { orderId, transactionId, sessionId, amount });
 
     setOrderRef(orderId || "");
 
@@ -30,11 +31,7 @@ export default function PaymentResultContent() {
     })
       .then((r) => r.json())
       .then((data) => {
-        sessionStorage.removeItem("mpgs_order_id");
-        sessionStorage.removeItem("mpgs_transaction_id");
-        sessionStorage.removeItem("mpgs_session_id");
-        sessionStorage.removeItem("mpgs_amount");
-
+        console.log("[PaymentResult] Capture response:", data);
         if (data.success) {
           setStatus("success");
           setMessage("Your payment was successful! Your booking is confirmed.");

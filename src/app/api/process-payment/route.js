@@ -72,10 +72,10 @@ export async function POST(request) {
     const authenticatePayerBody = {
       apiOperation: "AUTHENTICATE_PAYER",
       
-      authentication: {
-          redirectResponseUrl: "https://tangerine-tours-hotel-booking-app-1094214581019.europe-west1.run.app/payment-result",
+        authentication: {
+          redirectResponseUrl: `https://tangerine-tours-hotel-booking-app-1094214581019.europe-west1.run.app/payment-result?order_id=${orderId}&transaction_id=${transactionId}&session_id=${sessionId}&amount=${amount}`,
         },
-
+        
       correlationId: `corr-${Date.now()}`,
       device: {
         browser: "MOZILLA",
