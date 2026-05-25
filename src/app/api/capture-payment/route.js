@@ -25,7 +25,7 @@ export async function POST(req) {
       authentication: { transactionId: transactionId }, // keep original "1" here for auth reference
       order: {
         amount: parseFloat(amount).toFixed(2),
-        currency: "LKR",
+        currency: "USD",
         reference: orderId,
       },
       session: { id: sessionId },
