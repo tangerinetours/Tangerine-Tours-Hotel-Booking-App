@@ -1,7 +1,10 @@
 // /app/api/capture-payment/route.js
 import { NextResponse } from "next/server";
 
+
+
 export async function POST(req) {
+  
   try {
     const { orderId, transactionId, sessionId, amount } = await req.json();
 
@@ -12,11 +15,14 @@ export async function POST(req) {
 
     const credentials = Buffer.from(`${apiUsername}:${apiPassword}`).toString("base64");
 
-    const payUrl = `${baseUrl}/merchant/${merchantId}/order/${orderId}/transaction/${transactionId}`;
+    const payTransactionId = "2"; // must be different from auth transaction "1"
+    const payUrl = `${baseUrl}/merchant/${merchantId}/order/${orderId}/transaction/${payTransactionId}`;
+
+    
 
     const payBody = {
       apiOperation: "PAY",
-      authentication: { transactionId },
+      authentication: { transactionId: transactionId }, // keep original "1" here for auth reference
       order: {
         amount: parseFloat(amount).toFixed(2),
         currency: "LKR",
