@@ -27,7 +27,7 @@ export async function POST(req) {
           .header { background: #670770; color: #fff; padding: 30px; text-align: center; }
           .header h1 { margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
           .header p { margin: 5px 0 0; opacity: 0.85; font-size: 0.95rem; }
-          .badge { display: inline-block; background: #4caf50; color: #fff; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-top: 12px; }
+          .badge { display: inline-block; background: #34a138; color: #fff; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-top: 12px; }
           .body { padding: 30px; }
           .section-title { color: #670770; font-size: 1rem; font-weight: bold; border-bottom: 2px solid #f0e0f0; padding-bottom: 6px; margin: 24px 0 14px; text-transform: uppercase; letter-spacing: 1px; }
           .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 0.92rem; }
@@ -47,7 +47,7 @@ export async function POST(req) {
           <div class="header">
             <h1>FAIRVIEW HOTEL</h1>
             <p>Colombo, Sri Lanka</p>
-            <div class="badge">✅ Booking Confirmed</div>
+            <div class="badge"> Booking Confirmed</div>
           </div>
           <div class="body">
             <div class="order-box">
@@ -76,7 +76,7 @@ export async function POST(req) {
           </div>
           <div class="footer">
             Fairview Hotel &bull; Colombo, Sri Lanka<br>
-            <a href="mailto:hello@tangerinetours.com">hello@tangerinetours.com</a><br><br>
+            <a href="mailto:tours27@tangerinetours.com">tours27@tangerinetours.com</a><br><br>
             This is an automated booking confirmation. Please keep this for your records.
           </div>
         </div>
@@ -87,7 +87,7 @@ export async function POST(req) {
     // Email to hotel
     await transporter.sendMail({
       from: `"Fairview Hotel Bookings" <${process.env.SMTP_USER}>`,
-      to: "hello@tangerinetours.com",
+      to: "tours27@tangerinetours.com",
       subject: `New Booking Confirmed — ${bookingDetails.firstName} ${bookingDetails.lastName} | ${orderId}`,
       html: bookingHtml,
     });

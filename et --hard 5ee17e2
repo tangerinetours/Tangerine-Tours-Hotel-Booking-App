@@ -1,0 +1,45 @@
+[33m06a6490[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m fix: pass booking details via URL param to survive 3DS redirect
+[33m521fd25[m fix: pass booking details via URL param to survive cross-origin redirect
+[33m1ee4968[m fix: use bookingRef to avoid stale closure in payment callback
+[33m5ee17e2[m fix: clean PaymentResultContent, add email route as separate file
+[33mbac2fa5[m feat: send booking confirmation email to hotel and guest
+[33m4ea4f74[m fix: use USD currency in capture to match order currency
+[33m6f16d02[m fix: use transaction ID 2 for PAY to avoid conflict with auth transaction 1
+[33m27b3877[m fix: embed order data in redirectResponseUrl, read from URL params
+[33m62683e4[m fix: remove iframe, use full page redirect for 3DS
+[33m0abca6c[m fix: trigger 3DS redirect via useEffect instead of inline
+[33m4052193[m fix: syntax error in processPayment function
+[33mb948905[m fix: full page redirect for 3DS challenge, fix redirectResponseUrl
+[33m5feff07[m fix: capture payment inline after 3DS challenge completes
+[33mcc2e160[m fix: capture payment inline after 3DS challenge completes
+[33m84ac7ff[m failing error
+[33m4041f45[m fix: pass payment data via URL params to survive 3DS redirect
+[33mc15f817[m fix: add use client to payment-result page
+[33m8615f72[m fix: add use client directive to PaymentResultContent
+[33m9d05c89[m fix: correct CSS module path
+[33m5d633cc[m payment capture issue_3
+[33mdf93085[m payment capture issue_2nd submission
+[33m66b07da[m payment capture process
+[33mb1b7c72[m usd account api changes
+[33mfb666ee[m changes from commercial bank
+[33m8032af6[m background Image
+[33mae3bc9f[m again
+[33m3afa648[m payment form mobile view css
+[33me3c837f[m card details, Payment form mobile view
+[33mcad0234[m booking form mobile view
+[33mea030a8[m mobile view customizing
+[33m74d5877[m interface changes
+[33mbe12764[m interface changes
+[33m0c92a9b[m test 4
+[33mbccda22[m test 3
+[33m47a1c80[m second commit
+[33md3e1a0b[m fix: split payment-result into server/client components
+[33m2612fb7[m fix: wrap useSearchParams in Suspense
+[33m14d74e4[m fix: upgrade to node 20
+[33m021f504[m test_2
+[33m53d2b7d[m test
+[33mf6df6a1[m Fix MPGS status constants
+[33m3817275[m test
+[33mb904559[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m dockerfile
+[33m8742d61[m Initial commit
+[33mb84282f[m Initial commit from Create Next App
