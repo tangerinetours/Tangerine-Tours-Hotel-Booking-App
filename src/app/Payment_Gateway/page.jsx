@@ -144,7 +144,7 @@ export default function Home() {
         formSessionUpdate: async (response) => {
           console.log("[PaymentSession] formSessionUpdate:", response);
           if (response.status === "ok") {
-            await processPayment(sessionIdRef.current, orderIdRef.current, amountRef.current);
+            await processPayment(sessionIdRef.current, orderIdRef.current, amountRef.current, bookingDetails);
           } else if (response.status === "fields_in_error") {
             const fieldErrors = [];
             if (response.errors?.cardNumber) fieldErrors.push("Invalid card number");
@@ -190,6 +190,7 @@ export default function Home() {
     sessionStorage.setItem("mpgs_transaction_id", "1");
     sessionStorage.setItem("mpgs_session_id", sessionIdRef.current);
     sessionStorage.setItem("mpgs_amount", String(amountRef.current));
+    sessionStorage.setItem("mpgs_booking", JSON.stringify(bookingDetails));
 
     // Append the challenge form to body and submit it as full page redirect
     const container = document.createElement("div");
@@ -219,7 +220,7 @@ export default function Home() {
   };
 
   // STEP 5 — Process payment after card captured
-  const processPayment = async (sid, oid, amount) => {
+  const processPayment = async (sid, oid, amount, booking) => {
     try {
       const res = await fetch("/api/process-payment", {
         method: "POST",
@@ -230,6 +231,7 @@ export default function Home() {
       console.log("[Payment] process-payment response:", data);
 
       if (data.requiresChallenge) {
+      sessionStorage.setItem("mpgs_booking", JSON.stringify(booking));
         // Set challengeHtml — the useEffect above will trigger full-page redirect
         setChallengeHtml(data.challengeHtml);
         setPayStatus(PAY_STATUS.CHALLENGE);

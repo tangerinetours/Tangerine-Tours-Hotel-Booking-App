@@ -69,15 +69,18 @@
     display: flex;
     position: relative;
     width: 100%;
-    padding-top: 2rem;
     z-index: 2;
 }
 
 .right_content{
-    right: 2vw;
+    right: 0;
     position: fixed;
     z-index: 1;
-
+    background: linear-gradient(to right, rgba(121, 121, 121, 0), rgb(255, 255, 255), rgb(255, 255, 255));
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .preview_image{
@@ -137,6 +140,7 @@
     padding-bottom: 0.5rem;
     padding-left: 2vw;
     padding-right: 2vw;
+    margin-top: 4rem;
     width: 40vw;
     border-radius: 1rem;
     margin-left: 1rem;
@@ -317,7 +321,7 @@
     margin-left: 1rem;
     box-shadow: 0 30px 20px rgba(0, 0, 0, 0.12);
     width: 35vw;
-    margin-top: 1rem;
+    margin-top: 4rem;
 }
 
 /* slide in */

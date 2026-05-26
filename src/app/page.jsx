@@ -306,7 +306,7 @@ useEffect(() => {
     <>
       <div className={styles.container}>
         {/* Background */}
-
+          
           <div className={styles.background_wrapper}>
           <Image
             src="/background_image.jpg"
