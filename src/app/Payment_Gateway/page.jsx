@@ -95,6 +95,7 @@ export default function Home() {
     setIsPayment(true);
     amountRef.current = totalCost;
     bookingDetailsRef.current = booking;
+    sessionStorage.setItem("mpgs_booking", JSON.stringify(booking));
   };
 
   // STEP 2 — Create payment session
