@@ -44,7 +44,8 @@ export default function Home() {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [selectedImage, setSelectedImage] = useState("/Cover_Image.webp");
-
+  const [showPolicies, setShowPolicies] = useState(false);
+  const scrollRef = useRef(null);
   // ── Booking form state ───────────────────────────────────────────────────────
   const [formData, setFormData] = useState({
     firstName: "", lastName: "", phone: "", email: "",
@@ -298,6 +299,32 @@ useEffect(() => {
 }, [isPayment, sessionId]);
 
 
+// Reduce scroll sensitivity
+useEffect(() => {
+  let raf;
+
+  const handleScroll = () => {
+    const y = window.scrollY;
+
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const bg = document.querySelector(`.${styles.background_image}`);
+      const content = document.querySelector(`.${styles.content_body}`);
+
+      if (bg) {
+        bg.style.transform = `translateY(${y * 0.2}px)`; // background slower
+      }
+
+      if (content) {
+        content.style.transform = `translateY(${y * 0.7}px)`; // content slower than normal scroll
+      }
+    });
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   // ────────────────────────────────────────────────────────────────────────────
   // Render
@@ -320,7 +347,7 @@ useEffect(() => {
 
 
 
-        <div className={styles.content_body} suppressHydrationWarning>
+        <div className={styles.content_body}  ref={scrollRef}>
           <div className={styles.left_wrapper}>
 
             {/* ── PANEL 1: Room & Date Picker ── */}
@@ -460,11 +487,71 @@ useEffect(() => {
 
                   <span className={styles.checkmark}></span>
 
-                  <p>I agree to the Terms of Service and Cancellation Policy.</p>
+                  <p onClick={() => setShowPolicies(true)}>I agree to the Terms of <span>Service and Cancellation Policy.</span></p>
                 </div>
               <button className={styles.back_btn} onClick={handleSubmit} disabled={!isTermsAccepted}>Confirm Booking</button>
               <button className={styles.back_btn} onClick={() => setIsBooking(false)}>Back</button>
             </div>
+
+            <div className={styles.policiesCard_container} style={{ display: showPolicies ? "flex" : "none" }}>
+              <div className={styles.policiesCard}>
+              <button onClick={() => setShowPolicies(false)}>✕</button>
+              <h2 className={styles.title}>Reservation Terms & Conditions</h2>
+
+              <section className={styles.section}>
+                <ul className={styles.list}>
+                  <li>Rates are on a per room, per day basis.</li>
+                  <li>The non-commissionable rate includes all government taxes and service charges.</li>
+                  <li>All rates are subject to change if the government imposes additional taxes.</li>
+                </ul>
+              </section>
+
+              <section className={styles.section}>
+                <h3 className={styles.subtitle}>Payment & Confirmation</h3>
+                <p className={styles.text}>
+                  All reservations will be officially confirmed only upon receipt of advance payment.
+                </p>
+              </section>
+
+              <section className={styles.section}>
+                <h3 className={styles.subtitle}>Cancellation Policy</h3>
+                <p className={styles.text}>
+                  All advance payments made for this event are strictly non-refundable.
+                </p>
+              </section>
+
+              <section className={styles.section}>
+                <h3 className={styles.subtitle}>Standard Policies</h3>
+                <p className={styles.text}>
+                  Standard hotel policies and terms remain applicable for all stays throughout the duration of the event.
+                </p>
+              </section>
+            </div>
+            </div>
+
+
+              {/* ── 3DS Challenge iframe ── */}
+              {payStatus === PAY_STATUS.CHALLENGE && challengeHtml && (
+                <div className={styles.popup_payment_form_container}>
+                  <div className={styles.popup_payment_form}>
+                    
+                    <p className={styles.challenge_text}>
+                      🔒 Please complete 3D Secure verification:
+                    </p>
+
+                    <iframe
+                      srcDoc={challengeHtml}
+                      className={styles.iframe}
+                      sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation"
+                      title="3D Secure Verification"
+                    />
+                    
+                  </div>
+                </div>
+              )}
+
+
+
 
             {/* ── PANEL 3: Payment Form ── */}
             {isPayment && bookingDetails && (
@@ -515,35 +602,16 @@ useEffect(() => {
                 )}
                 
                 {payStatus === PAY_STATUS.FAILED && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "0.9rem" }}>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "0.5rem" }}>
                     <p style={{ color: "#721c24", fontWeight: "bold", fontSize: "0.8rem" }}>❌ {payError}</p>
                   </div>
                 )}
                 {payStatus === PAY_STATUS.SESSION_READY && payError && (
-                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", borderRadius: "0.5rem", padding: "0.2rem", paddingLeft: "1rem", marginBottom: "0.5rem" }}>
                     <p style={{ color: "#721c24", fontWeight: "bold", fontSize: "0.8rem" }}>⚠️ {payError}</p>
                   </div>
                 )}
 
-                {/* ── 3DS Challenge iframe ── */}
-                {payStatus === PAY_STATUS.CHALLENGE && challengeHtml && (
-                  <div style={{ marginBottom: "0.9rem"}}>
-                    <p style={{ color: "#670770", fontWeight: "bold", marginBottom: "0.5rem" }}>
-                      🔒 Please complete 3D Secure verification:
-                    </p>
-                    <iframe
-                      srcDoc={challengeHtml}
-                      style={{
-                        width: "100%",
-                        height: "fit-content",
-                        border: "2px solid #670770",
-                        borderRadius: "0.5rem",
-                      }}
-                      sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation"
-                      title="3D Secure Verification"
-                    />
-                  </div>
-                )}
                 {/* ── Card fields (hidden during challenge/success) ── */}
                 {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
                   <>
@@ -551,12 +619,29 @@ useEffect(() => {
                     <div className={styles.card_details}>
 
                               <Image
-            src="/payment_logo.png"
-            alt="Background"
-            width="612"
-            height="121"
-            className={styles.bank_logos}></Image>
+                                src="/payment_logo.png"
+                                alt="Background"
+                                width="612"
+                                height="121"
+                                className={styles.bank_logos}></Image>
+
                     <div className={styles.payment_inputs}>
+                    {/* Cardholder Name */}
+                    <div className={styles.payment_inputs}>
+                      <label htmlFor="cardholder-name">Name on Card</label>
+                      <input
+                        className={styles.gateway_input}
+                        id="cardholder-name"
+                        type="text"
+                        readOnly
+                        disabled={isInputDisabled}
+                        title="Cardholder Name"
+                        aria-label="Enter name on card"
+                      />
+                    </div>
+
+
+
                       <label htmlFor="card-number">Card Number</label>
                       {/*
                         IMPORTANT: These inputs must have readonly attribute and the exact IDs.
@@ -613,61 +698,63 @@ useEffect(() => {
                         aria-label="Three digit CVV security code"
                         style={{ width: "80px" }}
                       /></div>
+
+                      <div style={styles.payment_inputs_3}>
+                        {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
+                          <button
+                            className={styles.back_btn}
+                            onClick={handlePayNow}
+                            disabled={isBtnDisabled}
+                            style={{ opacity: isBtnDisabled ? 0.6 : 1 }}
+                          >
+                            {payStatus === PAY_STATUS.PROCESSING ? "PAY" : "PAY"}
+                          </button>
+                        )}
+                      </div>
+
+                      <div style={styles.payment_inputs_3}>
+                        {payStatus !== PAY_STATUS.SUCCESS && (
+                            <button
+                              className={styles.back_btn}
+                              disabled={isInputDisabled}
+                              style={{ opacity: isInputDisabled ? 0.6 : 1 }}
+                              onClick={() => {
+                                setIsPayment(false);
+                                setIsBooking(true);
+                                setPayStatus(PAY_STATUS.IDLE);
+                                setPayError("");
+                                setSessionId("");
+                                setOrderId("");
+                                setChallengeHtml("");
+                              }}
+                            >
+                              BACK
+                            </button>
+                          )}
+                      </div>
+
                     </div>
 
-                    {/* Cardholder Name */}
-                    <div className={styles.payment_inputs}>
-                      <label htmlFor="cardholder-name">Name on Card</label>
-                      <input
-                        className={styles.gateway_input}
-                        id="cardholder-name"
-                        type="text"
-                        readOnly
-                        disabled={isInputDisabled}
-                        title="Cardholder Name"
-                        aria-label="Enter name on card"
-                      />
-                    </div>
+
                     </div>
                   </>
                 )}
 
                 {/* ── Action buttons ── */}
                 <div className={styles.payment_buttons}>
-                  {payStatus !== PAY_STATUS.SUCCESS && payStatus !== PAY_STATUS.CHALLENGE && (
-                    <button
-                      className={styles.back_btn}
-                      onClick={handlePayNow}
-                      disabled={isBtnDisabled}
-                      style={{ opacity: isBtnDisabled ? 0.6 : 1 }}
-                    >
-                      {payStatus === PAY_STATUS.PROCESSING ? "Processing..." : "PAY NOW"}
-                    </button>
-                  )}
 
-                  {payStatus !== PAY_STATUS.SUCCESS && (
-                    <button
-                      className={styles.back_btn}
-                      disabled={isInputDisabled}
-                      style={{ opacity: isInputDisabled ? 0.6 : 1 }}
-                      onClick={() => {
-                        setIsPayment(false);
-                        setIsBooking(true);
-                        setPayStatus(PAY_STATUS.IDLE);
-                        setPayError("");
-                        setSessionId("");
-                        setOrderId("");
-                        setChallengeHtml("");
-                      }}
-                    >
-                      BACK
-                    </button>
-                  )}
+
+ 
                 </div>
 
               </div>
             )}
           </div>
+
+
+
+
+
 
           {/* ── Right: Image gallery ── */}
           <div className={styles.right_content}>

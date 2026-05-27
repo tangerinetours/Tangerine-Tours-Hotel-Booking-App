@@ -56,18 +56,18 @@ export async function POST(req) {
             </div>
 
             <div class="section-title">Guest Details</div>
-            <div class="row"><span class="label">Full Name</span><span class="value">${bookingDetails.firstName} ${bookingDetails.lastName}</span></div>
-            <div class="row"><span class="label">Email</span><span class="value">${bookingDetails.email}</span></div>
-            <div class="row"><span class="label">Phone</span><span class="value">${bookingDetails.phone}</span></div>
-            <div class="row"><span class="label">Nationality</span><span class="value">${bookingDetails.nationality}</span></div>
-            <div class="row"><span class="label">Adults</span><span class="value">${bookingDetails.adults}</span></div>
-            <div class="row"><span class="label">Children</span><span class="value">${bookingDetails.children}</span></div>
+            <div class="row"><span class="label">Full Name : </span><span class="value">${bookingDetails.firstName} ${bookingDetails.lastName}</span></div>
+            <div class="row"><span class="label">Email : </span><span class="value">${bookingDetails.email}</span></div>
+            <div class="row"><span class="label">Phone : </span><span class="value">${bookingDetails.phone}</span></div>
+            <div class="row"><span class="label">Nationality : </span><span class="value">${bookingDetails.nationality}</span></div>
+            <div class="row"><span class="label">Adults : </span><span class="value">${bookingDetails.adults}</span></div>
+            <div class="row"><span class="label">Children : </span><span class="value">${bookingDetails.children}</span></div>
 
-            <div class="section-title">Booking Details</div>
-            <div class="row"><span class="label">Room Type</span><span class="value">${bookingDetails.roomType} Room</span></div>
-            <div class="row"><span class="label">Check-In</span><span class="value">${bookingDetails.checkIn}</span></div>
-            <div class="row"><span class="label">Check-Out</span><span class="value">${bookingDetails.checkOut}</span></div>
-            <div class="row"><span class="label">Number of Nights</span><span class="value">${bookingDetails.nights}</span></div>
+            <div class="section-title">Booking Details : </div>
+            <div class="row"><span class="label">Room Type : </span><span class="value">${bookingDetails.roomType} Room</span></div>
+            <div class="row"><span class="label">Check-In : </span><span class="value">${bookingDetails.checkIn}</span></div>
+            <div class="row"><span class="label">Check-Out : </span><span class="value">${bookingDetails.checkOut}</span></div>
+            <div class="row"><span class="label">Number of Nights : </span><span class="value">${bookingDetails.nights}</span></div>
 
             <div class="total-row">
               <span class="label">Total Amount Paid</span>

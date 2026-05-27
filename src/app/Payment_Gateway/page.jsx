@@ -232,6 +232,13 @@ export default function Home() {
 
       if (data.requiresChallenge) {
       sessionStorage.setItem("mpgs_booking", JSON.stringify(booking));
+
+        sessionStorage.setItem("mpgs_order_id", oid);
+        sessionStorage.setItem("mpgs_transaction_id", "1");
+        sessionStorage.setItem("mpgs_session_id", sid);
+        sessionStorage.setItem("mpgs_amount", String(amount));
+        setChallengeHtml(data.challengeHtml);
+  setPayStatus(PAY_STATUS.CHALLENGE);
         // Set challengeHtml — the useEffect above will trigger full-page redirect
         setChallengeHtml(data.challengeHtml);
         setPayStatus(PAY_STATUS.CHALLENGE);
@@ -370,7 +377,7 @@ export default function Home() {
               <div className={styles.terms_and_condition_input}>
                 <input type="checkbox" className={styles.checkbox} checked={isTermsAccepted} onChange={(e) => setIsTermsAccepted(e.target.checked)} />
                 <span className={styles.checkmark}></span>
-                <p>I agree to the Terms of Service and Cancellation Policy.</p>
+                <p>I agree to the <span>Terms of Services and Cancellation Policy.</span></p>
               </div>
               <button className={styles.back_btn} onClick={handleSubmit} disabled={!isTermsAccepted}>Confirm Booking</button>
               <button className={styles.back_btn} onClick={() => setIsBooking(false)}>Back</button>
