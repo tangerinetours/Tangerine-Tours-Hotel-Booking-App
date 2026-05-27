@@ -752,10 +752,6 @@ useEffect(() => {
           </div>
 
 
-
-
-
-
           {/* ── Right: Image gallery ── */}
           <div className={styles.right_content}>
             <div className={styles.preview_image}>

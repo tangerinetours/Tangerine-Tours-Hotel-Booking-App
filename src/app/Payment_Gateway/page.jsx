@@ -50,10 +50,10 @@ export default function Home() {
   const [challengeHtml, setChallengeHtml] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [orderId, setOrderId] = useState("");
-
   const sessionIdRef = useRef("");
   const orderIdRef = useRef("");
   const amountRef = useRef(0);
+  const bookingDetailsRef = useRef(null);
 
   const nights = (() => {
     if (!startDate || !endDate) return 0;
@@ -94,6 +94,7 @@ export default function Home() {
     setIsBooking(false);
     setIsPayment(true);
     amountRef.current = totalCost;
+    bookingDetailsRef.current = booking;
   };
 
   // STEP 2 — Create payment session
@@ -182,31 +183,27 @@ export default function Home() {
   }, [isPayment, sessionId]);
 
   // ── KEY FIX: When challengeHtml is set, do a full-page redirect to Mastercard ACS ──
-  useEffect(() => {
-    if (payStatus !== PAY_STATUS.CHALLENGE || !challengeHtml) return;
+useEffect(() => {
+  if (payStatus !== PAY_STATUS.CHALLENGE || !challengeHtml) return;
 
-    // Save all data to sessionStorage before leaving the page
-    sessionStorage.setItem("mpgs_order_id", orderIdRef.current);
-    sessionStorage.setItem("mpgs_transaction_id", "1");
-    sessionStorage.setItem("mpgs_session_id", sessionIdRef.current);
-    sessionStorage.setItem("mpgs_amount", String(amountRef.current));
-    sessionStorage.setItem("mpgs_booking", JSON.stringify(bookingDetails));
+  sessionStorage.setItem("mpgs_order_id", orderIdRef.current);
+  sessionStorage.setItem("mpgs_transaction_id", "1");
+  sessionStorage.setItem("mpgs_session_id", sessionIdRef.current);
+  sessionStorage.setItem("mpgs_amount", String(amountRef.current));
+  sessionStorage.setItem("mpgs_booking", JSON.stringify(bookingDetailsRef.current)); // ← USE REF
 
-    // Append the challenge form to body and submit it as full page redirect
-    const container = document.createElement("div");
-    container.innerHTML = challengeHtml;
-    document.body.appendChild(container);
-
-    const form = container.querySelector("form");
-    if (form) {
-      form.target = "_self"; // full page, not iframe
-      form.submit();
-    }
-
-    return () => {
-      if (container.parentNode) container.parentNode.removeChild(container);
-    };
-  }, [payStatus, challengeHtml]);
+  const container = document.createElement("div");
+  container.innerHTML = challengeHtml;
+  document.body.appendChild(container);
+  const form = container.querySelector("form");
+  if (form) {
+    form.target = "_self";
+    form.submit();
+  }
+  return () => {
+    if (container.parentNode) container.parentNode.removeChild(container);
+  };
+}, [payStatus, challengeHtml]);
 
   // STEP 4 — PAY NOW button
   const handlePayNow = () => {
@@ -231,15 +228,11 @@ export default function Home() {
       console.log("[Payment] process-payment response:", data);
 
       if (data.requiresChallenge) {
-      sessionStorage.setItem("mpgs_booking", JSON.stringify(booking));
-
+        sessionStorage.setItem("mpgs_booking", JSON.stringify(bookingDetailsRef.current)); // ← USE REF
         sessionStorage.setItem("mpgs_order_id", oid);
         sessionStorage.setItem("mpgs_transaction_id", "1");
         sessionStorage.setItem("mpgs_session_id", sid);
         sessionStorage.setItem("mpgs_amount", String(amount));
-        setChallengeHtml(data.challengeHtml);
-  setPayStatus(PAY_STATUS.CHALLENGE);
-        // Set challengeHtml — the useEffect above will trigger full-page redirect
         setChallengeHtml(data.challengeHtml);
         setPayStatus(PAY_STATUS.CHALLENGE);
       } else if (data.success) {

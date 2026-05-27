@@ -1,4 +1,4 @@
-.title{
+.title_container h1{
     color: #670770;
     font-display: stretch;
     font: 1.2em sans-serif;
@@ -72,14 +72,14 @@
     right: 0;
     position: fixed;
     z-index: 1;
-    background: linear-gradient(to right, rgba(121, 121, 121, 0), rgb(255, 255, 255), rgb(255, 255, 255));
+    background: linear-gradient(to right, rgba(121, 121, 121, 0), rgb(125, 172, 211), rgb(125, 172, 211));
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .preview_image{
-    margin-top: 3rem;
+    margin-top: 2.5rem;
     display: flex;
     position: relative;
     padding-left: 4vw;
@@ -136,7 +136,7 @@
     padding-bottom: 0.5rem;
     padding-left: 2vw;
     padding-right: 2vw;
-    margin-top: 4rem;
+    margin-top: 3rem;
     width: 40vw;
     border-radius: 1rem;
     margin-left: 2rem;
@@ -317,7 +317,7 @@
     margin-left: 1rem;
     box-shadow: 0 30px 20px rgba(0, 0, 0, 0.12);
     width: 35vw;
-    margin-top: 4rem;
+    margin-top: 3rem;
     margin-left: 2rem;
 }
 
@@ -366,6 +366,7 @@
     color: #bb4949;
     font-size: 3rem;
     font-weight: 600;
+    margin: 0;
 }
 
 .room_cost_text_3{
@@ -376,7 +377,7 @@
 
 .booking_details_title{
     color: #5d0c66;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
 }
 
