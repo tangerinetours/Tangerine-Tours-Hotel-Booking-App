@@ -49,7 +49,7 @@ export default function Home() {
   // ── Booking form state ───────────────────────────────────────────────────────
   const [formData, setFormData] = useState({
     firstName: "", lastName: "", phone: "", email: "",
-    nationality: "", adults: 1, children: 0,
+    nationality: "", adults: 1, children: 0, specialNotes: "",
   });
   const [errors, setErrors] = useState({ phone: "", email: "", nationality: "" });
   const [bookingDetails, setBookingDetails] = useState(null);
@@ -102,6 +102,7 @@ export default function Home() {
       roomType: selectedRoom,
       checkIn: formatDate(startDate),
       checkOut: formatDate(endDate),
+      specialNotes: formData.specialNotes,
       nights,
       totalCost,
     };
@@ -478,8 +479,9 @@ useEffect(() => {
                   </div>
                 </div>
 
-                <input className={styles.form_group_email_input} placeholder="Special Notes" type="text" />
-              </div>
+                <input className={styles.form_group_email_input} placeholder="Special Notes" type="text" value={formData.specialNotes}
+                    onChange={(e) => setFormData({ ...formData, specialNotes: e.target.value })} />
+                </div>
                 <div className={styles.terms_and_condition_input}>
                   <input
                     type="checkbox"
@@ -585,6 +587,7 @@ useEffect(() => {
                     <p><span>Nationality:</span> {bookingDetails.nationality}</p>
                     <p><span>Adults:</span> {bookingDetails.adults}</p>
                     <p><span>Children:</span> {bookingDetails.children}</p>
+                    
                   </div>
                 </div>
 

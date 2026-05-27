@@ -68,6 +68,7 @@ export async function POST(req) {
             <div class="row"><span class="label">Check-In : </span><span class="value">${bookingDetails.checkIn}</span></div>
             <div class="row"><span class="label">Check-Out : </span><span class="value">${bookingDetails.checkOut}</span></div>
             <div class="row"><span class="label">Number of Nights : </span><span class="value">${bookingDetails.nights}</span></div>
+            <div class="row"><span class="label">Number of Nights : </span><span class="value">${bookingDetails.specialNotes}</span></div>
 
             <div class="total-row">
               <span class="label">Total Amount Paid</span>
