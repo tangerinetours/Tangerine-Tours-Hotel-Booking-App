@@ -65,6 +65,7 @@ export default function Home() {
   const sessionIdRef = useRef("");
   const orderIdRef = useRef("");
   const amountRef = useRef(0);
+  const bookingDetailsRef = useRef(null);
 
   // ── Calculations ─────────────────────────────────────────────────────────────
   const nights = (() => {
@@ -108,6 +109,8 @@ export default function Home() {
     setIsBooking(false);
     setIsPayment(true);
     amountRef.current = totalCost;
+    bookingDetailsRef.current = booking;
+    sessionStorage.setItem("mpgs_booking", JSON.stringify(booking));
   };
 
   // ────────────────────────────────────────────────────────────────────────────
