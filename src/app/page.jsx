@@ -492,7 +492,7 @@ useEffect(() => {
 
                   <span className={styles.checkmark}></span>
 
-                  <p onClick={() => setShowPolicies(true)}>I agree to the Terms of <span>Service and Cancellation Policy.</span></p>
+                  <p>I agree to the Terms of <span onClick={() => setShowPolicies(true)}>Service and Cancellation Policy.</span></p>
                 </div>
               <button className={styles.back_btn} onClick={handleSubmit} disabled={!isTermsAccepted}>Confirm Booking</button>
               <button className={styles.back_btn} onClick={() => setIsBooking(false)}>Back</button>
