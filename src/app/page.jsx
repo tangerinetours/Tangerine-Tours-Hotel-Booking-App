@@ -9,6 +9,7 @@ import { BedDouble } from "lucide-react";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber, parsePhoneNumber } from "react-phone-number-input";
 import { getNames } from "country-list";
+import Preloader from "./components/Preloader";
 
 
 const PhoneInput = dynamic(() => import("react-phone-number-input"), { ssr: false });
@@ -335,6 +336,7 @@ useEffect(() => {
   // ────────────────────────────────────────────────────────────────────────────
   return (
     <>
+    <Preloader />
       <div className={styles.container}>
         {/* Background */}
           
